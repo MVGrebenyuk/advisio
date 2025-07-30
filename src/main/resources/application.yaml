@@ -1,0 +1,24 @@
+spring:
+  application:
+      name: advisio-core
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    contexts: audit
+    default-schema: advisio_core
+  jpa:
+    database: postgresql
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+aws:
+  accessKeyId: pZHFL6TARutSLZ1E7f2Tgn
+  secret: 8PdV8sEkmeK13DRSM8g3WL5i7wv8Qg4hVMdSvrupSxrP
+  bucket: advisio
+
+server:
+  port: 8181
+  servlet:
+    context-path: /advisio

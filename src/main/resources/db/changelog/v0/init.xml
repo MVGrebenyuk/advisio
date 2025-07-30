@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.10.xsd">
+
+    <changeSet id="0.1" author="mvgrebenyuk">
+        <sql>
+            create table account (
+                id uuid not null,
+                email varchar(100) not null,
+                phone varchar(100) not null,
+                acc_details_id uuid not null
+            );
+
+            create table details (
+                id uuid not null,
+                account_id uuid not null,
+                name varchar(100),
+                surname varchar(100)
+            );
+
+            create table salepoint (
+                id uuid not null,
+                account_id uuid not null,
+                name varchar(100)
+            );
+
+            create table dev_group (
+                id uuid not null,
+                account_id uuid not null,
+                name varchar(100)
+            );
+
+            create table device (
+                id uuid not null,
+                account_id uuid,
+                sp_id uuid,
+                group_id uuid,
+                type varchar(30) not null,
+                serial uuid not null,
+                status varchar(10) not null,
+                image_url text
+            );
+
+        </sql>
+    </changeSet>
+
+
+
+
+</databaseChangeLog>
