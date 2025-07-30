@@ -21,6 +21,7 @@ public class DeviceController {
     @PostMapping("/register")
     @Operation(description = "Регистрация девайса при первом подключении")
     public Boolean register(@RequestParam(name = "serial") String serial){
+        log.info("Устройство с id {} пытается зарегистрироваться", serial);
         return deviceService.registration(serial);
     }
 
