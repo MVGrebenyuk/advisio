@@ -12,7 +12,9 @@ spring:
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
-
+  servlet:
+    multipart:
+      max-file-size: 10
 aws:
   accessKeyId: pZHFL6TARutSLZ1E7f2Tgn
   secret: 8PdV8sEkmeK13DRSM8g3WL5i7wv8Qg4hVMdSvrupSxrP
@@ -22,3 +24,6 @@ server:
   port: 8181
   servlet:
     context-path: /advisio
+springdoc:
+  swagger-ui:
+    path: /swagger
