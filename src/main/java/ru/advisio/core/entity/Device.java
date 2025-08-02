@@ -1,31 +1,40 @@
 package ru.advisio.core.entity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import jakarta.validation.constraints.NotNull;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+import ru.advisio.core.entity.base.BaseImagedEntity;
+import ru.advisio.core.enums.DeviceType;
+import ru.advisio.core.enums.Status;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "device")
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
 @AllArgsConstructor
-@Builder
-public class Device {
-
-    @Id
-    @NotNull
-    private UUID id;
+@NoArgsConstructor
+@SuperBuilder
+public class Device extends BaseImagedEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
@@ -42,7 +51,8 @@ public class Device {
     @NotBlank
     @Size(max = 30)
     @Column(nullable = false)
-    private String type;
+    @Enumerated(value = EnumType.STRING)
+    private DeviceType type;
 
     @NotNull
     @Column(nullable = false)
@@ -51,7 +61,14 @@ public class Device {
     @NotBlank
     @Size(max = 10)
     @Column(nullable = false)
-    private String status;
+    @Enumerated(value = EnumType.STRING)
+    private Status status;
 
-    private String imageUrl;
+    @ManyToMany
+    @JoinTable(
+            name = "device_images",
+            joinColumns = @JoinColumn(name = "device_id"),
+            inverseJoinColumns = @JoinColumn(name = "image_id")
+    )
+    private List<Image> images = new ArrayList<>();
 }

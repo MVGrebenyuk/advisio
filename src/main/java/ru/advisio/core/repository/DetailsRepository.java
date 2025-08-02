@@ -2,8 +2,8 @@ package ru.advisio.core.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import ru.advisio.core.entity.Details;
+import ru.advisio.core.repository.base.BaseRepository;
 
 import java.util.UUID;
 

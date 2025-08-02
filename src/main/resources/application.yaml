@@ -14,16 +14,29 @@ spring:
     driver-class-name: org.postgresql.Driver
   servlet:
     multipart:
-      max-file-size: 10
+      max-file-size: 1000000000000000
 aws:
   accessKeyId: pZHFL6TARutSLZ1E7f2Tgn
   secret: 8PdV8sEkmeK13DRSM8g3WL5i7wv8Qg4hVMdSvrupSxrP
   bucket: advisio
-
+  path: https://${aws.bucket}.hb.bizmrg.com
+image:
+  default: https://advisio.hb.bizmrg.com/59d1ce42-d1ec-45be-9775-cb17e34c5ea6123.jpg
 server:
   port: 8181
   servlet:
     context-path: /advisio
+
+openapi:
+  security:
+    scheme:
+      name: default
+  version: 1
+
 springdoc:
   swagger-ui:
-    path: /swagger
+    path: /api-docs/swagger-ui.html  # Изменение пути UI
+    tags-sorter: alpha               # Сортировка тегов
+    operations-sorter: alpha         # Сортировка методов
+  api-docs:
+    path: /api-docs/v3/api-docs      # Изменение пути JSON

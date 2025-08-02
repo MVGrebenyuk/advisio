@@ -47,6 +47,56 @@
         </sql>
     </changeSet>
 
+    <changeSet id="0.2" author="mvgrebenyuk">
+        <sql>
+            create table image (
+                id uuid not null,
+                account_id uuid,
+                image text
+            )
+        </sql>
+    </changeSet>
+
+    <changeSet id="0.3" author="mvgrebenyuk">
+        <sql>
+            alter table device drop column image_url;
+        </sql>
+    </changeSet>
+
+    <changeSet id="0.4" author="mvgrebenyuk">
+        <sql>
+            create table account_images (
+                                            account_id uuid not null,
+                                            image_id uuid not null,
+                                            primary key (account_id, image_id)
+            );
+
+            create table salepoint_images (
+                                              salepoint_id uuid not null,
+                                              image_id uuid not null,
+                                              primary key (salepoint_id, image_id)
+            );
+
+            create table dev_group_images (
+                                              dev_group_id uuid not null,
+                                              image_id uuid not null,
+                                              primary key (dev_group_id, image_id)
+            );
+
+            create table device_images (
+                                           device_id uuid not null,
+                                           image_id uuid not null,
+                                           primary key (device_id, image_id)
+            );
+
+            create table details_images (
+                                            details_id uuid not null,
+                                            image_id uuid not null,
+                                            primary key (details_id, image_id)
+            );
+        </sql>
+    </changeSet>
+
 
 
 

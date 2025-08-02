@@ -3,10 +3,12 @@ package ru.advisio.core.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import ru.advisio.core.entity.Device;
+import ru.advisio.core.repository.base.BaseImagedRepository;
 
+import java.util.Optional;
 import java.util.UUID;
 
-public interface DeviceRepository extends BaseRepository<Device>{
+public interface DeviceRepository extends BaseImagedRepository<Device> {
 
     Page<Device> findByAccountId(UUID accountId, Pageable pageable);
 
@@ -16,7 +18,7 @@ public interface DeviceRepository extends BaseRepository<Device>{
 
     Page<Device> findByStatus(String status, Pageable pageable);
 
-    Device getDeviceBySerial(UUID serialId);
+    Optional<Device> getDeviceBySerial(UUID serialId);
     boolean existsBySerial(UUID serial);
 
 }

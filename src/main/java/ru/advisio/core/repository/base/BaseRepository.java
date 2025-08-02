@@ -1,4 +1,4 @@
-package ru.advisio.core.repository;
+package ru.advisio.core.repository.base;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -7,9 +7,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import ru.advisio.core.entity.Image;
+import ru.advisio.core.enums.EnType;
+import ru.advisio.core.exceptions.AdvisioEntityNotFound;
 import ru.advisio.core.repository.DeviceRepository;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
@@ -22,37 +26,43 @@ public class AwsService {
 
     @Value("${aws.bucket}")
     private String bucket;
-    private String path = "https://advisio.hb.bizmrg.com/";
+
+    @Value("${aws.path}")
+    private String path;
 
     private final S3Client client;
-    private final DeviceRepository deviceRepository;
+    private final ImageService imageService;
 
     @Transactional
-    public String uploadImage(MultipartFile file, String deviceId) {
+    public Image uploadImage(MultipartFile file) {
+        var response = uploadImageToS3(file);
 
-        if(!deviceRepository.existsBySerial(UUID.fromString(deviceId))){
-            log.error("Device with id {} not registered", deviceId);
-            throw new EntityNotFoundException();
-        }
-
-        var response = uploadImage(file);
         if(response == null) {
-            log.error("Error save image for device: {}", deviceId);
+            log.error("Error save image");
             throw new RuntimeException();
         }
 
-        deviceRepository.getDeviceBySerial(UUID.fromString(deviceId))
-                .setImageUrl(response);
-        log.info("Succesfull saved for device: {}", deviceId);
-
-        return response;
+        return imageService.saveImage(response, null, null);
     }
-    public String uploadImage(MultipartFile file) {
+
+    @Transactional
+    public Image uploadImage(MultipartFile file, String id, EnType type) {
+        var response = uploadImageToS3(file);
+
+        if(response == null) {
+            log.error("Error save image");
+            throw new RuntimeException();
+        }
+
+        return imageService.saveImage(response, UUID.fromString(id), type);
+    }
+
+    public String uploadImageToS3(MultipartFile file) {
         String partName = UUID.randomUUID().toString();
         try {
-            PutObjectResponse putObjectResponse = client.putObject(PutObjectRequest.builder()
+            client.putObject(PutObjectRequest.builder()
                     .bucket(bucket)
-                    .acl("public-read")
+                    .acl(ObjectCannedACL.PUBLIC_READ)
                     .key(partName + file.getOriginalFilename())
                     .build(), RequestBody.fromBytes(file.getBytes()));
         } catch (Exception e){
