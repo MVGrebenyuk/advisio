@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import ru.advisio.core.dto.image.ImageResponseDto;
 import ru.advisio.core.entity.Image;
 import ru.advisio.core.enums.EnType;
 import ru.advisio.core.exceptions.AdvisioEntityNotFound;
@@ -34,7 +35,7 @@ public class AwsService {
     private final ImageService imageService;
 
     @Transactional
-    public Image uploadImage(MultipartFile file) {
+    public ImageResponseDto uploadImage(MultipartFile file) {
         var response = uploadImageToS3(file);
 
         if(response == null) {
@@ -46,7 +47,7 @@ public class AwsService {
     }
 
     @Transactional
-    public Image uploadImage(MultipartFile file, String id, EnType type) {
+    public ImageResponseDto uploadImage(MultipartFile file, String id, EnType type) {
         var response = uploadImageToS3(file);
 
         if(response == null) {

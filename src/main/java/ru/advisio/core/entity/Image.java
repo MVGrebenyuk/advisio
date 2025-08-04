@@ -1,7 +1,9 @@
 package ru.advisio.core.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
@@ -29,16 +31,20 @@ public class Image {
     @NotNull
     private UUID id;
 
-    @ManyToMany(mappedBy = "images")
+    @JsonIgnore
+    @ManyToMany(mappedBy = "images", fetch = FetchType.LAZY)
     private List<Account> accounts = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "images")
+    @JsonIgnore
+    @ManyToMany(mappedBy = "images", fetch = FetchType.LAZY)
     private List<SalePoint> salePoints = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "images")
+    @JsonIgnore
+    @ManyToMany(mappedBy = "images", fetch = FetchType.LAZY)
     private List<Group> devGroups = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "images")
+    @JsonIgnore
+    @ManyToMany(mappedBy = "images", fetch = FetchType.LAZY)
     private List<Device> devices = new ArrayList<>();
 
     @NotNull

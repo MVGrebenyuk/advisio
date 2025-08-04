@@ -97,6 +97,34 @@
         </sql>
     </changeSet>
 
+    <changeSet id="0.5" author="mvgrebenyuk">
+        <sql>
+            alter table "account" drop column acc_details_id;
+            alter table "account" add column company_type varchar(7) not null;
+            alter table details rename column "name" to official_name;
+            alter table details drop column surname;
+
+            create table "user" (
+                id uuid not null,
+                email varchar(100) not null,
+                phone varchar(13) not null,
+                name varchar(20) not null,
+                second_name varchar(20),
+                surname varchar(30) not null
+            );
+
+            create table user_account (
+                                            user_id uuid not null,
+                                            account_id uuid not null,
+                                            role varchar(10),
+                                            position varchar(100),
+                                            primary key (user_id, account_id)
+            );
+
+
+        </sql>
+    </changeSet>
+
 
 
 

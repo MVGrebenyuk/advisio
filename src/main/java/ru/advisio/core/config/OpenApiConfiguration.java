@@ -14,7 +14,7 @@ public class OpenApiConfiguration {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("API Documentation")
+                        .title("ADVISIO | API Documentation")
                         .version("1.0")
                         .description("Документация REST API"));
     }

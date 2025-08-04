@@ -3,25 +3,29 @@ package ru.advisio.core.entity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import ru.advisio.core.entity.base.BaseImagedEntity;
+import ru.advisio.core.enums.CompanyType;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.UUID;
+import java.util.Set;
 
 @Entity
 @Table(name = "account")
@@ -43,9 +47,8 @@ public class Account extends BaseImagedEntity {
     @Column(nullable = false)
     private String phone;
 
-    @NotNull
-    @Column(name = "acc_details_id", nullable = false)
-    private UUID accDetailsId;
+    @Enumerated(value = EnumType.STRING)
+    private CompanyType companyType;
 
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Details details;
@@ -57,4 +60,7 @@ public class Account extends BaseImagedEntity {
             inverseJoinColumns = @JoinColumn(name = "image_id")
     )
     private List<Image> images = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "accounts")
+    private Set<User> users = new HashSet<>();
 }

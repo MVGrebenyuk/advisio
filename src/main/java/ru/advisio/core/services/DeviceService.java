@@ -5,11 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import ru.advisio.core.dto.DeviceRegisterResponseDto;
 import ru.advisio.core.entity.Device;
 import ru.advisio.core.entity.Image;
 import ru.advisio.core.enums.DeviceType;
 import ru.advisio.core.enums.Status;
 import ru.advisio.core.repository.DeviceRepository;
+import ru.advisio.core.utils.CollectionObjectMapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +23,9 @@ import java.util.UUID;
 public class DeviceService {
 
     private final DeviceRepository deviceRepository;
-    public UUID registration(String uuid){
+    private final CollectionObjectMapper collectionObjectMapper;
+
+    public DeviceRegisterResponseDto registration(String uuid){
         var result = Optional.of(deviceRepository.save(Device.builder()
                         .id(UUID.randomUUID())
                         .type(DeviceType.VISIO_1)
@@ -29,7 +33,7 @@ public class DeviceService {
                         .serial(UUID.fromString(uuid))
                 .build())).orElseThrow(() -> new RuntimeException("Unable to register device with id " + uuid));
         log.info("Устройство с id {} успешно зарегистрировано", uuid);
-        return result.getId();
+        return (DeviceRegisterResponseDto) collectionObjectMapper.convertValue(result, DeviceRegisterResponseDto.class);
     }
 
     public boolean isRegister(String id){

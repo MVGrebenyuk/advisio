@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.advisio.core.dto.DeviceRegisterResponseDto;
 import ru.advisio.core.services.DeviceService;
 
 import java.util.UUID;
@@ -24,7 +25,7 @@ public class DeviceController {
 
     @PostMapping("/register")
     @Operation(description = "Регистрация девайса при первом подключении")
-    public UUID register(@RequestParam(name = "serial") String serial){
+    public DeviceRegisterResponseDto register(@RequestParam(name = "serial") String serial){
         log.info("Устройство с id {} пытается зарегистрироваться", serial);
         return deviceService.registration(serial);
     }

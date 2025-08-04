@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.advisio.core.dto.image.ImageResponseDto;
 import ru.advisio.core.entity.base.BaseImagedEntity;
 import ru.advisio.core.entity.Image;
 import ru.advisio.core.enums.EnType;
@@ -17,6 +19,7 @@ import ru.advisio.core.repository.GroupRepository;
 import ru.advisio.core.repository.ImageRepository;
 import ru.advisio.core.repository.SalePointRepository;
 import ru.advisio.core.repository.custom.ImageRepositoryCustomImpl;
+import ru.advisio.core.utils.CollectionObjectMapper;
 
 import java.util.List;
 import java.util.Map;
@@ -26,6 +29,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class ImageService {
+
+    private final CollectionObjectMapper<ImageResponseDto, Image> objectMapper;
 
     private final ImageRepository repository;
     private final ImageRepositoryCustomImpl imageRepositoryCustom;
@@ -46,7 +51,7 @@ public class ImageService {
                 EnType.GROUP, groupRepository);
     }
 
-    public Image saveImage(String image, UUID id, EnType enType){
+    public ImageResponseDto saveImage(String image, UUID id, EnType enType){
         log.info("Сохраняем изображение {}", image);
         var result = repository.save(Image.builder()
                         .id(UUID.randomUUID())
@@ -58,7 +63,7 @@ public class ImageService {
             link(result, id, enType);
         }
 
-        return result;
+        return objectMapper.convertValue(result, ImageResponseDto.class);
     }
     public void link(Image image, UUID id, EnType enType) {
         dinamicRepo.get(enType).findById(id)
@@ -67,18 +72,19 @@ public class ImageService {
 
     }
 
-    public List<Image> getImagesByType(String uuid, EnType type) {
+    @Transactional
+    public List<ImageResponseDto> getImagesByType(String uuid, EnType type) {
         log.info("Попытка получения данных для отображения для {} с id {}", type.name(), uuid);
         var result = imageRepositoryCustom.getImagesByTypeId(type.getM2mTable(), type.getField(), UUID.fromString(uuid));
 
         if (CollectionUtils.isEmpty(result)){
             log.info("Изображение для отображения для {} с id {} не найдено. Применяем дефолтное", type.name(), uuid);
-            return List.of(Image.builder()
+            return List.of(ImageResponseDto.builder()
                     .id(UUID.randomUUID())
                     .image(defaultImage)
                     .build());
         }
 
-        return result;
+        return (List<ImageResponseDto>) objectMapper.convertCollection(result, ImageResponseDto.class);
     }
 }

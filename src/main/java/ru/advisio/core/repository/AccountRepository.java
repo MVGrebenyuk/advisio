@@ -8,6 +8,7 @@ import ru.advisio.core.repository.base.BaseImagedRepository;
 public interface AccountRepository extends BaseImagedRepository<Account> {
     boolean existsByEmail(String email);
 
+    boolean existsByEmailOrPhone(String email, String phone);
     boolean existsByPhone(String phone);
 
     Page<Account> findByEmailContainingIgnoreCase(String emailPart, Pageable pageable);
