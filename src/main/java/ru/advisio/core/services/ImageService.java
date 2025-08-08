@@ -12,7 +12,7 @@ import ru.advisio.core.entity.base.BaseImagedEntity;
 import ru.advisio.core.entity.Image;
 import ru.advisio.core.enums.EnType;
 import ru.advisio.core.exceptions.AdvisioEntityNotFound;
-import ru.advisio.core.repository.AccountRepository;
+import ru.advisio.core.repository.CompanyRepository;
 import ru.advisio.core.repository.base.BaseImagedRepository;
 import ru.advisio.core.repository.DeviceRepository;
 import ru.advisio.core.repository.GroupRepository;
@@ -35,7 +35,7 @@ public class ImageService {
     private final ImageRepository repository;
     private final ImageRepositoryCustomImpl imageRepositoryCustom;
     private final DeviceRepository deviceRepository;
-    private final AccountRepository accountRepository;
+    private final CompanyRepository companyRepository;
     private final SalePointRepository salePointRepository;
     private final GroupRepository groupRepository;
     private Map<EnType, BaseImagedRepository<? extends BaseImagedEntity>> dinamicRepo;
@@ -47,7 +47,7 @@ public class ImageService {
      dinamicRepo = Map.of(
                 EnType.DEVICE, deviceRepository,
                 EnType.SP, salePointRepository,
-                EnType.ACCOUNT, accountRepository,
+                EnType.COMPANY, companyRepository,
                 EnType.GROUP, groupRepository);
     }
 

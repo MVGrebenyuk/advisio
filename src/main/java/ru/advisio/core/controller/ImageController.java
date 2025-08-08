@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import ru.advisio.core.aop.CompanyAdmin;
 import ru.advisio.core.dto.image.ImageResponseDto;
 import ru.advisio.core.entity.Image;
 import ru.advisio.core.enums.EnType;
@@ -40,7 +43,9 @@ public class ImageController {
 
     @GetMapping("/{id}/download")
     @Operation(description = "Получение изображений по id сущности, в зависимости от типа (ACCOUNT, SP, DEVICE, GROUP)")
-    public List<ImageResponseDto> getImages(@PathVariable(name = "id") String uuid, @RequestParam(required = true) EnType type){
+    public List<ImageResponseDto> getImages(@PathVariable(name = "id") String uuid,
+                                            @RequestParam(required = true) EnType type){
+        System.out.println("User");
         return imageService.getImagesByType(uuid, type);
     }
 }

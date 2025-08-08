@@ -33,7 +33,7 @@ public class Image {
 
     @JsonIgnore
     @ManyToMany(mappedBy = "images", fetch = FetchType.LAZY)
-    private List<Account> accounts = new ArrayList<>();
+    private List<Company> companies = new ArrayList<>();
 
     @JsonIgnore
     @ManyToMany(mappedBy = "images", fetch = FetchType.LAZY)

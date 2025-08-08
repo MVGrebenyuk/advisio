@@ -36,8 +36,8 @@ import java.util.UUID;
 public class Device extends BaseImagedEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id")
-    private Account account;
+    @JoinColumn(name = "company_id")
+    private Company company;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sp_id")

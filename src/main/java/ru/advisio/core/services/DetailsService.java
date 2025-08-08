@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.advisio.core.dto.details.DetailsUpdateDto;
 import ru.advisio.core.dto.details.DetailsResponseDto;
-import ru.advisio.core.entity.Account;
+import ru.advisio.core.entity.Company;
 import ru.advisio.core.entity.Details;
 import ru.advisio.core.enums.EnType;
 import ru.advisio.core.exceptions.AdvisioEntityNotFound;
@@ -25,17 +25,17 @@ public class DetailsService {
     private final DetailsRepository detailsRepository;
     private final CollectionObjectMapper objectMapper;
 
-    public Details createForNewAccount(Account account){
+    public Details createForNewAccount(Company company){
         return detailsRepository.save(Details.builder()
                         .id(UUID.randomUUID())
-                        .account(account)
+                        .company(company)
                         .officialName(DEFAULT_NAME)
                 .build());
     }
 
     @Transactional
     public DetailsResponseDto enrich(DetailsUpdateDto detailsUpdateDto){
-        var entity = detailsRepository.findByAccountId(UUID.fromString(detailsUpdateDto.getAccountId()))
+        var entity = detailsRepository.findByCompanyId(UUID.fromString(detailsUpdateDto.getAccountId()))
                 .orElseThrow(() -> new AdvisioEntityNotFound(EnType.DETAILS, "(AccountId) " + detailsUpdateDto.getAccountId()));
 
         entity.setOfficialName(detailsUpdateDto.getOfficialName());

@@ -7,7 +7,7 @@
 
     <changeSet id="0.1" author="mvgrebenyuk">
         <sql>
-            create table account (
+            create table company (
                 id uuid not null,
                 email varchar(100) not null,
                 phone varchar(100) not null,
@@ -16,26 +16,26 @@
 
             create table details (
                 id uuid not null,
-                account_id uuid not null,
+                compnay_id uuid not null,
                 name varchar(100),
                 surname varchar(100)
             );
 
             create table salepoint (
                 id uuid not null,
-                account_id uuid not null,
+                company_id uuid not null,
                 name varchar(100)
             );
 
             create table dev_group (
                 id uuid not null,
-                account_id uuid not null,
+                company_id uuid not null,
                 name varchar(100)
             );
 
             create table device (
                 id uuid not null,
-                account_id uuid,
+                company_id uuid,
                 sp_id uuid,
                 group_id uuid,
                 type varchar(30) not null,
@@ -51,7 +51,7 @@
         <sql>
             create table image (
                 id uuid not null,
-                account_id uuid,
+                company_id uuid,
                 image text
             )
         </sql>
@@ -65,10 +65,10 @@
 
     <changeSet id="0.4" author="mvgrebenyuk">
         <sql>
-            create table account_images (
-                                            account_id uuid not null,
+            create table company_images (
+                                            company_id uuid not null,
                                             image_id uuid not null,
-                                            primary key (account_id, image_id)
+                                            primary key (company_id, image_id)
             );
 
             create table salepoint_images (
@@ -99,29 +99,28 @@
 
     <changeSet id="0.5" author="mvgrebenyuk">
         <sql>
-            alter table "account" drop column acc_details_id;
-            alter table "account" add column company_type varchar(7) not null;
+            alter table "company" drop column acc_details_id;
+            alter table "company" add column company_type varchar(7) not null;
             alter table details rename column "name" to official_name;
             alter table details drop column surname;
+        </sql>
+    </changeSet>
 
-            create table "user" (
-                id uuid not null,
-                email varchar(100) not null,
-                phone varchar(13) not null,
-                name varchar(20) not null,
-                second_name varchar(20),
-                surname varchar(30) not null
-            );
+    <changeSet id="0.6" author="mvgrebenyuk">
+        <sql>
+            alter table company drop column email;
+            alter table company drop column phone;
+            alter table company add column cname varchar(100);
 
-            create table user_account (
-                                            user_id uuid not null,
-                                            account_id uuid not null,
-                                            role varchar(10),
-                                            position varchar(100),
-                                            primary key (user_id, account_id)
-            );
+            insert into company (id, cname, company_type) values  (
+            '855a398d-1bbc-4271-86d9-ca37ae142fa3', 'Rusap(NORTH)', 'LLC'
+            )
+        </sql>
+    </changeSet>
 
-
+    <changeSet id="0.7" author="mvgrebenyuk">
+        <sql>
+            alter table details rename column compnay_id to company_id;
         </sql>
     </changeSet>
 

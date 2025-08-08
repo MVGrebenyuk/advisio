@@ -9,10 +9,6 @@ import java.util.UUID;
 
 public interface SalePointRepository extends BaseImagedRepository<SalePoint> {
 
-    Page<SalePoint> findByAccountId(UUID accountId, Pageable pageable);
-
     Page<SalePoint> findByNameContainingIgnoreCase(String namePart, Pageable pageable);
-
-    long countByAccountId(UUID accountId);
 
 }

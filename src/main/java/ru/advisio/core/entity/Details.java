@@ -30,8 +30,8 @@ public class Details {
     @NotNull
     @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id", nullable = false)
-    private Account account;
+    @JoinColumn(name = "company_id", nullable = false)
+    private Company company;
 
     @Size(max = 100)
     private String officialName;

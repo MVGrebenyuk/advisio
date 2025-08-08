@@ -10,8 +10,6 @@ import java.util.UUID;
 
 public interface DetailsRepository extends BaseRepository<Details> {
 
-    Optional<Details> findByAccountId(UUID accountId);
-
-    boolean existsByAccountId(UUID accountId);
+    Optional<Details> findByCompanyId(UUID accountId);
 
 }

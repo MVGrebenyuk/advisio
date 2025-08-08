@@ -13,10 +13,6 @@ public interface GroupRepository extends BaseImagedRepository<Group> {
 
     Page<Group> findAll(Specification<Group> spec, Pageable pageable);
 
-    Page<Group> findByAccountId(UUID accountId, Pageable pageable);
-
     Page<Group> findByNameContainingIgnoreCase(String namePart, Pageable pageable);
-
-    boolean existsByAccountIdAndName(UUID accountId, String name);
 
 }
