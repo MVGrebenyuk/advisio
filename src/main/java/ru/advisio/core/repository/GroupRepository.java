@@ -7,16 +7,14 @@ import ru.advisio.core.entity.Group;
 import ru.advisio.core.repository.base.BaseImagedRepository;
 import ru.advisio.core.repository.base.BaseRepository;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface GroupRepository extends BaseImagedRepository<Group> {
 
     Page<Group> findAll(Specification<Group> spec, Pageable pageable);
 
-    Page<Group> findByAccountId(UUID accountId, Pageable pageable);
-
     Page<Group> findByNameContainingIgnoreCase(String namePart, Pageable pageable);
 
-    boolean existsByAccountIdAndName(UUID accountId, String name);
-
+    List<Group> findAllByCompany_Cname(String cname);
 }

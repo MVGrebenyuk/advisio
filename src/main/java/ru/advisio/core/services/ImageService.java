@@ -1,6 +1,7 @@
 package ru.advisio.core.services;
 
 import jakarta.annotation.PostConstruct;
+import liquibase.util.ObjectUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -8,11 +9,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.advisio.core.dto.image.ImageResponseDto;
+import ru.advisio.core.entity.Group;
+import ru.advisio.core.entity.SalePoint;
 import ru.advisio.core.entity.base.BaseImagedEntity;
 import ru.advisio.core.entity.Image;
 import ru.advisio.core.enums.EnType;
 import ru.advisio.core.exceptions.AdvisioEntityNotFound;
-import ru.advisio.core.repository.AccountRepository;
+import ru.advisio.core.repository.CompanyRepository;
 import ru.advisio.core.repository.base.BaseImagedRepository;
 import ru.advisio.core.repository.DeviceRepository;
 import ru.advisio.core.repository.GroupRepository;
@@ -21,9 +24,14 @@ import ru.advisio.core.repository.SalePointRepository;
 import ru.advisio.core.repository.custom.ImageRepositoryCustomImpl;
 import ru.advisio.core.utils.CollectionObjectMapper;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,9 +43,10 @@ public class ImageService {
     private final ImageRepository repository;
     private final ImageRepositoryCustomImpl imageRepositoryCustom;
     private final DeviceRepository deviceRepository;
-    private final AccountRepository accountRepository;
+    private final CompanyRepository companyRepository;
     private final SalePointRepository salePointRepository;
     private final GroupRepository groupRepository;
+    private final CompanyService companyService;
     private Map<EnType, BaseImagedRepository<? extends BaseImagedEntity>> dinamicRepo;
     @Value("${image.default}")
     private String defaultImage;
@@ -47,7 +56,7 @@ public class ImageService {
      dinamicRepo = Map.of(
                 EnType.DEVICE, deviceRepository,
                 EnType.SP, salePointRepository,
-                EnType.ACCOUNT, accountRepository,
+                EnType.COMPANY, companyRepository,
                 EnType.GROUP, groupRepository);
     }
 
@@ -72,6 +81,7 @@ public class ImageService {
 
     }
 
+    @Deprecated
     @Transactional
     public List<ImageResponseDto> getImagesByType(String uuid, EnType type) {
         log.info("Попытка получения данных для отображения для {} с id {}", type.name(), uuid);
@@ -86,5 +96,64 @@ public class ImageService {
         }
 
         return (List<ImageResponseDto>) objectMapper.convertCollection(result, ImageResponseDto.class);
+    }
+
+    @Transactional
+    public List<ImageResponseDto> getDeviceImages(String uuid){
+        var device = deviceRepository.getDeviceBySerial(UUID.fromString(uuid))
+                .orElseThrow(() -> new AdvisioEntityNotFound(EnType.DEVICE, uuid));
+
+        List<Image> images;
+
+        if(Objects.nonNull(device.getGroup()) && Boolean.TRUE.equals(device.getGroup().getIsActive())){
+            images = device.getGroup().getImages();
+            if(CollectionUtils.isNotEmpty(images)){
+                log.info("Выводим изображение по группе {} для девайса {}", device.getGroup().getName(), uuid);
+                return (List<ImageResponseDto>) objectMapper.convertCollection(images, ImageResponseDto.class);
+            }
+        }
+
+        if(Objects.nonNull(device.getSalePoint())){
+            images = device.getSalePoint().getImages();
+            if(CollectionUtils.isNotEmpty(images)){
+                log.info("Выводим изображение по SalePoint {} для девайса {}", device.getSalePoint().getName(), uuid);
+                return (List<ImageResponseDto>) objectMapper.convertCollection(images, ImageResponseDto.class);
+            }
+        }
+
+        images = device.getImages();
+        if(CollectionUtils.isNotEmpty(images)){
+            log.info("Выводим изображение по данным девайся {}", uuid);
+            return (List<ImageResponseDto>) objectMapper.convertCollection(images, ImageResponseDto.class);
+        }
+
+
+        log.info("Изображение для отображения на устройстве {} не найдено. Применяем дефолтное", uuid);
+        return List.of(ImageResponseDto.builder()
+                .id(UUID.randomUUID())
+                .image(defaultImage)
+                .build());
+    }
+
+    @Transactional
+    public List<Image> getActiveImages(String cname){
+        return companyService.getSafeCompanyByCname(cname)
+                .getImages().stream()
+                .filter(image -> activeImagesOnGroup(image.getDevGroups())
+                || !CollectionUtils.isEmpty(image.getSalePoints()))
+                .collect(Collectors.toList());
+    }
+
+    public boolean activeImagesOnGroup(List<Group> group){
+        if(CollectionUtils.isEmpty(group)){
+            return false;
+        }
+        return group.stream().anyMatch(Group::getIsActive);
+    }
+
+    @Transactional
+    public List<Image> getAllImages(String cname) {
+        return companyService.getSafeCompanyByCname(cname)
+                .getImages();
     }
 }

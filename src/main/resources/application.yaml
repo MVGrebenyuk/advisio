@@ -4,26 +4,46 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
     contexts: audit
-    default-schema: advisio_core
+    default-schema: ${DATABASE_SCHEMA:advisio_core}
   jpa:
     database: postgresql
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: postgres
+    url: jdbc:postgresql://${ADVISIO_CORE_DATABASE:localhost:5432/postgres?currentSchema=${spring.liquibase.default-schema}}
+    username: ${ADVISIO_CORE_USERNAME:postgres}
+    password: ${ADVISIO_CORE_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
   servlet:
     multipart:
       max-file-size: 1000000000000000
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${keycloak.auth-server-url}/realms/${keycloak.realm}
+          jwk-set-uri: ${keycloak.auth-server-url}/realms/${keycloak.realm}/protocol/openid-connect/certs
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+
+keycloak:
+  auth-server-url: ${KC_AUTH_SERVER:http://localhost:8080}
+  realm: ${KC_REALM:advisio_realm}
+keycloak-admin:
+  client-id: ${KC_CLIENT_ID:admin-cli}
+  client-secret: ${KC_SECRET:your-client-secret}
+  username: ${KC_USERNAME:admin}
+  password: ${KC_PASSWORD:admin}
+
 aws:
-  accessKeyId: pZHFL6TARutSLZ1E7f2Tgn
-  secret: 8PdV8sEkmeK13DRSM8g3WL5i7wv8Qg4hVMdSvrupSxrP
-  bucket: advisio
-  path: https://${aws.bucket}.hb.bizmrg.com
+  accessKeyId: ${AWS_ACCESS_KEY_ID:pZHFL6TARutSLZ1E7f2Tgn}
+  secret: ${AWS_SECRET:8PdV8sEkmeK13DRSM8g3WL5i7wv8Qg4hVMdSvrupSxrP}
+  bucket: ${AWS_BUCKET:advisio}
+  path: ${AWS_PATH:https://${aws.bucket}.hb.bizmrg.com/}
 image:
-  default: https://advisio.hb.bizmrg.com/59d1ce42-d1ec-45be-9775-cb17e34c5ea6123.jpg
+  default: https://advisio.hb.bizmrg.com/9ca1b40f-f082-4164-aec3-75a02e1882ablogo_advisio_jpg (2).jpg
 server:
-  port: 8181
+  port: ${ADVISIO_PORT:8181}
   servlet:
     context-path: /advisio
 
@@ -38,5 +58,14 @@ springdoc:
     path: /api-docs/swagger-ui.html  # Изменение пути UI
     tags-sorter: alpha               # Сортировка тегов
     operations-sorter: alpha         # Сортировка методов
+    oauth:
+      client-id: advisio-spring-app
+      client-secret: 358773
+#      realm: advisio_realm
+#      app-name: advisio
+#      oauth2-redirect-url: "http://localhost:8181/api-docs/swagger-ui.html"
+#      config-url: /api-docs/v3/api-docs
+#      url: /v3/api-docs
+#      use-basic-authentication-with-access-code-grant: true
   api-docs:
     path: /api-docs/v3/api-docs      # Изменение пути JSON

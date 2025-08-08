@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  advisio-core:
+    image: your-java21-app-image  # Замените на ваш образ Java приложения
+    container_name: advisio-core
+    environment:
+      - ADVISIO_PORT=8181
+      - ADVISIO_CORE_DATABASE=postgres:5432/postgres
+      - ADVISIO_CORE_USERNAME=postgres
+      - ADVISIO_CORE_PASSWORD=postgres
+      - DATABASE_SCHEMA=advisio_core
+      - KC_AUTH_SERVER=http://keycloak:8080
+      - KC_REALM=advisio_realm
+      - KC_CLIENT_ID=admin-cli
+      - KC_SECRET=your-client-secret
+      - KC_USERNAME=admin
+      - KC_PASSWORD=admin
+      - AWS_ACCESS_KEY_ID=pZHFL6TARutSLZ1E7f2Tgn
+      - AWS_SECRET=8PdV8sEkmeK13DRSM8g3WL5i7wv8Qg4hVMdSvrupSxrP
+      - AWS_BUCKET=advisio
+      - AWS_PATH=https://${AWS_BUCKET}.hb.bizmrg.com
+    ports:
+      - "8181:8181"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+    networks:
+      - advisio-network
+
+  postgres:
+    image: postgres:latest
+    container_name: advisio-postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+    networks:
+      - advisio-network
+
+  keycloak:
+    image: mvgrebeniuk/keycloak_advisio:latest
+    container_name: advisio-keycloak
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_HEALTH_ENABLED=true
+      - KC_METRICS_ENABLED=true
+    ports:
+      - "8080:8080"
+    command:
+      - start-dev
+      - --import-realm
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - advisio-network
+
+volumes:
+  postgres_data:
+
+networks:
+  advisio-network:
+    driver: bridge

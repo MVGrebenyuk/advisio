@@ -7,7 +7,7 @@
 
     <changeSet id="0.1" author="mvgrebenyuk">
         <sql>
-            create table account (
+            create table company (
                 id uuid not null,
                 email varchar(100) not null,
                 phone varchar(100) not null,
@@ -16,26 +16,26 @@
 
             create table details (
                 id uuid not null,
-                account_id uuid not null,
+                compnay_id uuid not null,
                 name varchar(100),
                 surname varchar(100)
             );
 
             create table salepoint (
                 id uuid not null,
-                account_id uuid not null,
+                company_id uuid not null,
                 name varchar(100)
             );
 
             create table dev_group (
                 id uuid not null,
-                account_id uuid not null,
+                company_id uuid not null,
                 name varchar(100)
             );
 
             create table device (
                 id uuid not null,
-                account_id uuid,
+                company_id uuid,
                 sp_id uuid,
                 group_id uuid,
                 type varchar(30) not null,
@@ -51,7 +51,7 @@
         <sql>
             create table image (
                 id uuid not null,
-                account_id uuid,
+                company_id uuid,
                 image text
             )
         </sql>
@@ -65,10 +65,10 @@
 
     <changeSet id="0.4" author="mvgrebenyuk">
         <sql>
-            create table account_images (
-                                            account_id uuid not null,
+            create table company_images (
+                                            company_id uuid not null,
                                             image_id uuid not null,
-                                            primary key (account_id, image_id)
+                                            primary key (company_id, image_id)
             );
 
             create table salepoint_images (
@@ -99,32 +99,157 @@
 
     <changeSet id="0.5" author="mvgrebenyuk">
         <sql>
-            alter table "account" drop column acc_details_id;
-            alter table "account" add column company_type varchar(7) not null;
+            alter table "company" drop column acc_details_id;
+            alter table "company" add column company_type varchar(7) not null;
             alter table details rename column "name" to official_name;
             alter table details drop column surname;
-
-            create table "user" (
-                id uuid not null,
-                email varchar(100) not null,
-                phone varchar(13) not null,
-                name varchar(20) not null,
-                second_name varchar(20),
-                surname varchar(30) not null
-            );
-
-            create table user_account (
-                                            user_id uuid not null,
-                                            account_id uuid not null,
-                                            role varchar(10),
-                                            position varchar(100),
-                                            primary key (user_id, account_id)
-            );
-
-
         </sql>
     </changeSet>
 
+    <changeSet id="0.6" author="mvgrebenyuk">
+        <sql>
+            alter table company drop column email;
+            alter table company drop column phone;
+            alter table company add column cname varchar(100);
+
+            insert into company (id, cname, company_type) values  (
+            '855a398d-1bbc-4271-86d9-ca37ae142fa3', 'Rusap(NORTH)', 'LLC'
+            )
+        </sql>
+    </changeSet>
+
+    <changeSet id="0.7" author="mvgrebenyuk">
+        <sql>
+            alter table details rename column compnay_id to company_id;
+        </sql>
+    </changeSet>
+
+    <changeSet id="0.8" author="mvgrebenyuk">
+        <sql>
+            alter table image add column preview text;
+            alter table image add column source text;
+            alter table image add column data jsonb;
+        </sql>
+    </changeSet>
+
+    <changeSet id="0.9" author="mvgrebenyuk">
+        <sql>
+            alter table salepoint add column address text;
+            alter table salepoint add column description text;
+            drop table details_images cascade;
+
+            alter table dev_group add column active boolean default false;
+
+            alter table salepoint add constraint sp_uniq_id unique (id);
+            alter table company add constraint company_uniq_id unique (id);
+            alter table device add constraint device_uniq_id unique (id);
+            alter table device add constraint device_uniq_serial unique (serial);
+            alter table dev_group add constraint group_uniq_id unique (id);
+
+            alter table advisio_core.device
+                add constraint device_sp_fk
+                    foreign key (sp_id) references salepoint (id);
+            alter table advisio_core.device
+                add constraint device_group_fk
+                    foreign key (group_id) references dev_group (id);
+            alter table advisio_core.device
+                add constraint device_company_fk
+                    foreign key (company_id) references company (id);
+
+    </sql>
+    </changeSet>
+
+    <changeSet id="1.0" author="mvgrebenyuk">
+        <sql>
+            create table tag (
+                id uuid not null primary key unique,
+                name varchar(15) not null,
+                company_id uuid not null
+            );
+
+            alter table tag add constraint name_cid_uniq unique (name, company_id);
+            alter table device add column tag_id uuid references tag (id);
+
+            create table template (
+                id uuid not null primary key unique,
+                url text not null,
+                name varchar(100),
+                company_id uuid not null references company (id)
+            );
+
+            alter table image drop column "source";
+            alter table image drop column preview;
+            alter table image add column template_id uuid references template(id);
+        </sql>
+    </changeSet>
+
+    <changeSet id="1.1" author="mvgrebenyuk">
+        <sql>
+            create table crm_data (
+                id uuid not null primary key unique,
+                company_id uuid not null references company(id),
+                crm_type varchar(15) not null,
+                name varchar(30) not null,
+                description text
+            );
+
+            create table products (
+                id uuid not null primary key unique,
+                company_id uuid not null references company(id),
+                crm_source uuid not null references crm_data(id),
+                tech_id varchar(100) not null,
+                tech_name varchar(100) not null,
+                crm varchar (20) not null,
+                sale_name varchar (150),
+                value varchar (30)
+            );
+
+            create table product_attributes (
+                id uuid not null primary key unique,
+                product_id uuid not null references products(id),
+                tech_id varchar(100) not null,
+                tech_name varchar(100) not null,
+                sale_name varchar(150),
+                value varchar(10)
+            );
+        </sql>
+    </changeSet>
+
+    <changeSet id="1.2" author="mvgrebenyuk">
+        <sql>
+            alter table template add column creation_dt timestamp not null;
+        </sql>
+    </changeSet>
+
+    <changeSet id="1.3" author="mvgrebenyuk">
+        <sql>
+            CREATE TABLE connection_crm (
+                                            id uuid PRIMARY KEY unique,
+                                            crm_id uuid not null references crm_data(id),
+                                            connection_name VARCHAR(255) NOT NULL,
+                                            crm_type VARCHAR(50) NOT NULL,
+                                            connection_type VARCHAR(50) NOT NULL,
+                                            connection_url VARCHAR(255) NOT NULL,
+                                            login VARCHAR(255),
+                                            password VARCHAR(255),
+                                            token VARCHAR(255),
+                                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        </sql>
+    </changeSet>
+
+    <changeSet id="1.4" author="mvgrebenyuk">
+        <sql>
+            alter table crm_data add column connection_id uuid references connection_crm(id);
+        </sql>
+    </changeSet>
+
+    <changeSet id="1.5" author="mvgrebenyuk">
+        <sql>
+            alter table crm_data rename to crm;
+        </sql>
+    </changeSet>
 
 
 

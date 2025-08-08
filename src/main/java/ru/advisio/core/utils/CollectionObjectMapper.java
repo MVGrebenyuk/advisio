@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -30,6 +33,22 @@ public class CollectionObjectMapper<E, T> {
 
     public Collection<E> convertCollection(Collection<T> source, Class<E> target){
         var retCollection = new ArrayList<E>();
+
+        if(source.isEmpty()){
+            log.warn("Collection for cast is empty");
+            return retCollection;
+        }
+
+        source.forEach(src -> {
+            var trgt = safeConvert(target, src);
+            retCollection.add(trgt);
+        });
+
+        return retCollection;
+    }
+
+    public Set<E> convertCollection(Set<T> source, Class<E> target){
+        Set retCollection = new HashSet<>();
 
         if(source.isEmpty()){
             log.warn("Collection for cast is empty");

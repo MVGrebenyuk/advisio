@@ -1,17 +1,17 @@
 package ru.advisio.core.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,11 +32,17 @@ public class Group extends BaseImagedEntity {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id", nullable = false)
-    private Account account;
+    @JoinColumn(name = "company_id", nullable = false)
+    private Company company;
 
     @Size(max = 100)
     private String name;
+
+    @Column(name = "active")
+    private Boolean isActive;
+
+    @OneToMany(mappedBy = "group")
+    private List<Device> devices;
 
     @ManyToMany
     @JoinTable(

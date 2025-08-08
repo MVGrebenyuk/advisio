@@ -1,5 +1,6 @@
 package ru.advisio.core.repository;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.Query;
 import ru.advisio.core.entity.Image;
 import ru.advisio.core.repository.base.BaseRepository;

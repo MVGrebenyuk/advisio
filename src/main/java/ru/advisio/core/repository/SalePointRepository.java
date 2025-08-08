@@ -5,14 +5,12 @@ import org.springframework.data.domain.Pageable;
 import ru.advisio.core.entity.SalePoint;
 import ru.advisio.core.repository.base.BaseImagedRepository;
 
-import java.util.UUID;
+import java.util.List;
 
 public interface SalePointRepository extends BaseImagedRepository<SalePoint> {
 
-    Page<SalePoint> findByAccountId(UUID accountId, Pageable pageable);
-
     Page<SalePoint> findByNameContainingIgnoreCase(String namePart, Pageable pageable);
 
-    long countByAccountId(UUID accountId);
+    List<SalePoint> findAllByCompany_CnameIgnoreCase(String cname);
 
 }

@@ -1,5 +1,6 @@
 package ru.advisio.core.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -35,10 +36,12 @@ import java.util.UUID;
 @SuperBuilder
 public class Device extends BaseImagedEntity {
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id")
-    private Account account;
+    @JoinColumn(name = "company_id")
+    private Company company;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sp_id")
     private SalePoint salePoint;
@@ -63,6 +66,11 @@ public class Device extends BaseImagedEntity {
     @Enumerated(value = EnumType.STRING)
     private Status status;
 
+    @ManyToOne()
+    @JoinColumn(name = "tag_id")
+    private Tag tag;
+
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "device_images",

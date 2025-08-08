@@ -8,8 +8,8 @@ import java.util.UUID;
 
 public class AdvisioAccountExistException extends AdvisioBaseException {
 
-    public AdvisioAccountExistException(String email, String phone){
-        super(String.format("Account with email: %s or phone: %s is existed", email, phone));
+    public AdvisioAccountExistException(String cname){
+        super(String.format("Company with cname %s is existed", cname));
     }
 
 }

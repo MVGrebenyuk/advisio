@@ -6,10 +6,10 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-@Schema(description = "Описание типа компании (ИП, ООО, АО, ОАО, ПАО)", example = "PERSONAL, LLC, JSC, OJSC, PJSC")
+@Schema(description = "Описание типа компании (ИП, ООО, АО, ОАО, ПАО)", example = "IP, LLC, JSC, OJSC, PJSC")
 public enum CompanyType {
 
-    PERSONAL("ИП"),
+    IP("ИП"),
     LLC("ООО"),
     JSC("АО"),
     OJSC("ОАО"),

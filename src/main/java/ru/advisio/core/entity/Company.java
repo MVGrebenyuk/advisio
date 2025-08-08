@@ -1,5 +1,6 @@
 package ru.advisio.core.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,9 +10,9 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -28,39 +29,43 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "account")
+@Table(name = "company")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class Account extends BaseImagedEntity {
-
-    @NotBlank
-    @Size(max = 100)
-    @Email
-    @Column(nullable = false)
-    private String email;
+public class Company extends BaseImagedEntity {
 
     @NotBlank
     @Size(max = 100)
     @Column(nullable = false)
-    private String phone;
+    private String cname;
 
     @Enumerated(value = EnumType.STRING)
     private CompanyType companyType;
 
-    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Details details;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "company")
+    private List<Device> devices;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "company")
+    private List<Tag> tags;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "company")
+    private List<Template> tamplates;
+
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
-            name = "account_images",
-            joinColumns = @JoinColumn(name = "account_id"),
+            name = "company_images",
+            joinColumns = @JoinColumn(name = "company_id"),
             inverseJoinColumns = @JoinColumn(name = "image_id")
     )
     private List<Image> images = new ArrayList<>();
-
-    @ManyToMany(mappedBy = "accounts")
-    private Set<User> users = new HashSet<>();
 }
