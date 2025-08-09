@@ -25,7 +25,6 @@ public class AuthController {
             Model model) {
 
         try {
-            // Здесь будет вызов Keycloak API (реализуем ниже)
             String token = KeycloakService.getToken(username, password);
             model.addAttribute("token", token);
             model.addAttribute("error", null);

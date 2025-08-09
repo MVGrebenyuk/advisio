@@ -73,7 +73,7 @@ public class GroupManagementAspect {
         boolean isManager = userGroups.contains(String.format("/%s/%s", companyName, Roles.MANAGER.getName()));
         boolean isAdmin = userGroups.contains(String.format("/%s/%s", companyName, Roles.ADMIN.getName()));
 
-        if (!isManager || !isAdmin) {
+        if (!isManager && !isAdmin) {
             throw new AccessDeniedException("User is not a Company Manager");
         }
 
@@ -100,7 +100,7 @@ public class GroupManagementAspect {
         boolean isAdmin = userGroups.contains(String.format("/%s/%s", companyName, Roles.ADMIN.getName()));
         boolean isObserver = userGroups.contains(String.format("/%s/%s", companyName, Roles.OBSERVER.getName()));
 
-        if (!isManager || !isAdmin || !isObserver) {
+        if (!isManager && !isAdmin && !isObserver) {
             throw new AccessDeniedException("User to not belongs for no one company");
         }
 

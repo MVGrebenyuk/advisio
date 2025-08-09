@@ -8,12 +8,17 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.advisio.core.dto.account.CompanyRegisterDto;
 import ru.advisio.core.dto.account.CompanyResponseDto;
 import ru.advisio.core.entity.Company;
+import ru.advisio.core.entity.Device;
+import ru.advisio.core.entity.Image;
+import ru.advisio.core.enums.EnType;
 import ru.advisio.core.exceptions.AdvisioAccountExistException;
+import ru.advisio.core.exceptions.AdvisioEntityNotFound;
 import ru.advisio.core.repository.CompanyRepository;
 import ru.advisio.core.utils.CollectionObjectMapper;
 import ru.advisio.core.utils.UserUtil;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -25,7 +30,7 @@ public class CompanyService {
     private final CompanyRepository repository;
     private final DetailsService detailsService;
     private final CompanyGroupService groupService;
-    private final CollectionObjectMapper<CompanyResponseDto, Company> collectionObjectMapper;
+    private final CollectionObjectMapper collectionObjectMapper;
 
     @Transactional
     public CompanyResponseDto register(Principal principal, CompanyRegisterDto requestDto){
@@ -44,7 +49,7 @@ public class CompanyService {
         savedEntity.setDetails(detailsService.createForNewAccount(savedEntity));
         groupService.createMainGroup(principal.getName(), requestDto.getCname());
 
-        return collectionObjectMapper.convertValue(savedEntity, CompanyResponseDto.class);
+        return (CompanyResponseDto) collectionObjectMapper.convertValue(savedEntity, CompanyResponseDto.class);
     }
 
     public Set<CompanyResponseDto> getUserCompanyes() {
@@ -53,4 +58,12 @@ public class CompanyService {
                         UserUtil.getOidcUserCompanyes()), CompanyResponseDto.class);
     }
 
+    public List<Image> getCompanyImages(String cname) {
+        return repository.findByCname(cname).get().getImages();
+    }
+
+    public List<Device> getCompanyDevices(String cname) {
+        return repository.findByCname(cname).orElseThrow(() -> new AdvisioEntityNotFound(EnType.COMPANY, cname))
+                .getDevices();
+    }
 }

@@ -45,7 +45,6 @@ public class ImageController {
     @Operation(description = "Получение изображений по id сущности, в зависимости от типа (ACCOUNT, SP, DEVICE, GROUP)")
     public List<ImageResponseDto> getImages(@PathVariable(name = "id") String uuid,
                                             @RequestParam(required = true) EnType type){
-        System.out.println("User");
         return imageService.getImagesByType(uuid, type);
     }
 }
