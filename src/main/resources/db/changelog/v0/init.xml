@@ -124,6 +124,41 @@
         </sql>
     </changeSet>
 
+    <changeSet id="0.8" author="mvgrebenyuk">
+        <sql>
+            alter table image add column preview text;
+            alter table image add column source text;
+            alter table image add column data jsonb;
+        </sql>
+    </changeSet>
+
+    <changeSet id="0.9" author="mvgrebenyuk">
+        <sql>
+            alter table salepoint add column address text;
+            alter table salepoint add column description text;
+            drop table details_images cascade;
+
+            alter table dev_group add column active boolean default false;
+
+            alter table salepoint add constraint sp_uniq_id unique (id);
+            alter table company add constraint company_uniq_id unique (id);
+            alter table device add constraint device_uniq_id unique (id);
+            alter table device add constraint device_uniq_serial unique (serial);
+            alter table dev_group add constraint group_uniq_id unique (id);
+
+            alter table advisio_core.device
+                add constraint device_sp_fk
+                    foreign key (sp_id) references salepoint (id);
+            alter table advisio_core.device
+                add constraint device_group_fk
+                    foreign key (group_id) references dev_group (id);
+            alter table advisio_core.device
+                add constraint device_company_fk
+                    foreign key (company_id) references company (id);
+
+    </sql>
+    </changeSet>
+
 
 
 

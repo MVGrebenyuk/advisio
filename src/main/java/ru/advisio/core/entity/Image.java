@@ -1,6 +1,8 @@
 package ru.advisio.core.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,6 +15,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,4 +53,11 @@ public class Image {
     @NotNull
     @Column(columnDefinition = "text", nullable = false)
     private String image;
+
+    @Column(columnDefinition = "text", nullable = false)
+    private String preview;
+
+    @Column(columnDefinition = "jsonb", nullable = true)
+    @Type(value = JsonType.class)
+    private JsonNode data;
 }

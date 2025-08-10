@@ -21,6 +21,12 @@ public class SalePointDto {
     @Schema(description = "Наименование торговой точки")
     private String name;
 
+    @Schema(description = "Адрес торговой точки")
+    private String address;
+
+    @Schema(description = "Дополнительная информация о торговой точке")
+    private String description;
+
     @Schema(description = "Изображения, привязанные к ТТ")
     private List<Image> images;
 

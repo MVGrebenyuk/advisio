@@ -1,11 +1,13 @@
 package ru.advisio.core.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -35,6 +37,12 @@ public class Group extends BaseImagedEntity {
 
     @Size(max = 100)
     private String name;
+
+    @Column(name = "active")
+    private Boolean isActive;
+
+    @OneToMany(mappedBy = "group")
+    private List<Device> devices;
 
     @ManyToMany
     @JoinTable(

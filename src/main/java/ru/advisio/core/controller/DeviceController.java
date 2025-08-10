@@ -5,14 +5,18 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.advisio.core.dto.DeviceRegisterResponseDto;
+import ru.advisio.core.aop.CompanyManager;
+import ru.advisio.core.dto.device.DeviceRegisterResponseDto;
+import ru.advisio.core.dto.device.LinkDeviceDto;
+import ru.advisio.core.dto.device.UnlinkDeviceDto;
 import ru.advisio.core.services.DeviceService;
-
-import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,5 +38,26 @@ public class DeviceController {
     @Operation(description = "Проверка, зарегистрирован ли такой девайс")
     public Boolean testRegister(@RequestParam(name = "id") String id){
         return deviceService.isRegister(id);
+    }
+
+    @CompanyManager
+    @PutMapping("/{cname}/link/sp")
+    @Operation(description = "Привязать устройство к торговой точке")
+    public void linkDeviceToSalePoint(@PathVariable String cname, @RequestBody LinkDeviceDto linkDeviceDto){
+        deviceService.linkDevice(linkDeviceDto);
+    }
+
+    @CompanyManager
+    @PutMapping("/{cname}/link")
+    @Operation(description = "Привязать устройстуво к компании")
+    public void linkDevice(@PathVariable String cname, @RequestParam String serial){
+        deviceService.linkDevice(cname, serial);
+    }
+
+    @CompanyManager
+    @PutMapping("/{cname}/unlink")
+    @Operation(description = "Привязать устройстуво к компании")
+    public void linkDevice(@PathVariable String cname, UnlinkDeviceDto unlinkDeviceDto){
+        deviceService.removeFromSalesPoint(unlinkDeviceDto);
     }
 }

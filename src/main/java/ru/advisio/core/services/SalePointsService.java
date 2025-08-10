@@ -58,6 +58,8 @@ public class SalePointsService {
     public SalePointDto editSalePoint(String cname, String spId, UpdateSalePointDto dto) {
         var entity = repository.findById(UUID.fromString(spId)).orElseThrow(() -> new AdvisioEntityNotFound(EnType.SP, spId));
         entity.setName(dto.getUpdatedName());
+        entity.setAddress(dto.getAddress());
+        entity.setDescription(dto.getDescription());
 
         return (SalePointDto) mapper.convertValue(entity, SalePointDto.class);
     }

@@ -1,4 +1,4 @@
-package ru.advisio.core.dto;
+package ru.advisio.core.dto.device;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
