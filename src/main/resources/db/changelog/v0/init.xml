@@ -159,6 +159,61 @@
     </sql>
     </changeSet>
 
+    <changeSet id="1.0" author="mvgrebenyuk">
+        <sql>
+            create table tag (
+                id uuid not null primary key unique,
+                name varchar(15) not null,
+                company_id uuid not null
+            );
+
+            alter table tag add constraint name_cid_uniq unique (name, company_id);
+            alter table device add column tag_id uuid references tag (id);
+
+            create table template (
+                id uuid not null primary key unique,
+                url text not null,
+                name varchar(100),
+                company_id uuid not null references company (id)
+            );
+
+            alter table image drop column "source";
+            alter table image drop column preview;
+            alter table image add column template_id uuid references template(id);
+        </sql>
+    </changeSet>
+
+    <changeSet id="1.1" author="mvgrebenyuk">
+        <sql>
+            create table crm_data (
+                id uuid not null primary key unique,
+                company_id uuid not null references company(id),
+                crm_type varchar(15) not null,
+                name varchar(30) not null,
+                description text
+            );
+
+            create table products (
+                id uuid not null primary key unique,
+                company_id uuid not null references company(id),
+                crm_source uuid not null references crm_data(id),
+                tech_id varchar(100) not null,
+                tech_name varchar(100) not null,
+                crm varchar (20) not null,
+                sale_name varchar (150),
+                value varchar (30)
+            );
+
+            create table product_attributes (
+                id uuid not null primary key unique,
+                product_id uuid not null references products(id),
+                tech_id varchar(100) not null,
+                tech_name varchar(100) not null,
+                sale_name varchar(150),
+                value varchar(10)
+            );
+        </sql>
+    </changeSet>
 
 
 

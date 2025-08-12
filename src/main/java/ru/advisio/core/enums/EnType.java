@@ -13,7 +13,9 @@ public enum EnType {
     SP("salepoint_images","sp_id"),
     GROUP("dev_group_images","group_id"),
     DEVICE("device_images","device_id"),
-    DETAILS(null, null);
+    DETAILS(null, null),
+    TAG(null, null),
+    TEMPLATE(null, null);
 
     private final String m2mTable;
     private final String field;

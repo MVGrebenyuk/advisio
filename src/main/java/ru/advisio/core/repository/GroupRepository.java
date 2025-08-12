@@ -7,6 +7,7 @@ import ru.advisio.core.entity.Group;
 import ru.advisio.core.repository.base.BaseImagedRepository;
 import ru.advisio.core.repository.base.BaseRepository;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface GroupRepository extends BaseImagedRepository<Group> {
@@ -15,4 +16,5 @@ public interface GroupRepository extends BaseImagedRepository<Group> {
 
     Page<Group> findByNameContainingIgnoreCase(String namePart, Pageable pageable);
 
+    List<Group> findAllByCompany_Cname(String cname);
 }

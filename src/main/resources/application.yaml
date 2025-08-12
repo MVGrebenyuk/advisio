@@ -4,30 +4,19 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
     contexts: audit
-    default-schema: advisio_core
+    default-schema: ${DATABASE_SCHEMA:advisio_core}
   jpa:
     database: postgresql
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: postgres
+    url: jdbc:postgresql://${ADVISIO_CORE_DATABASE:localhost:5432/postgres?currentSchema=${spring.liquibase.default-schema}}
+    username: ${ADVISIO_CORE_USERNAME:postgres}
+    password: ${ADVISIO_CORE_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
   servlet:
     multipart:
       max-file-size: 1000000000000000
   security:
     oauth2:
-#      client:
-#        registration:
-#          keycloak:
-#            client-id: advisio-spring-app
-##            client-secret: eyJhbGciOiJIUzUxMiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICIxZGM4ZjUzYS1lYTA5LTRiMmMtYmE5Mi1hMDM0ZTg2NDhjYjQifQ.eyJleHAiOjE3ODYwMTcwMjcsImlhdCI6MTc1NDQ4MTAyNywianRpIjoiZWQ0OGI0MDUtZTM2OC00OTFkLWE1MGYtN2U4ZTQ4ODljNTAyIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9hZHZpc2lvX3JlYWxtIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9hZHZpc2lvX3JlYWxtIiwidHlwIjoiSW5pdGlhbEFjY2Vzc1Rva2VuIn0.CPfm8kppg9W9Q5d_dI5mlqcLMGw3Q8Z324hwGaQ4G4w0zBtb2zOxZREVwtwS3VBE5Eoo5bncaQQQV7bTT1ulUQ  # Найти в Keycloak → Clients → spring-app → Credentials
-#            scope: openid,profile,email
-#            provider: keycloak
-#        provider:
-#          keycloak:
-#            issuer-uri: http://localhost:8080/realms/advisio_realm
-#            user-name-attribute: preferred_username
       resourceserver:
         jwt:
           issuer-uri: ${keycloak.auth-server-url}/realms/${keycloak.realm}
@@ -38,23 +27,23 @@ spring:
     suffix: .html
 
 keycloak:
-  auth-server-url: http://localhost:8080
-  realm: advisio_realm
+  auth-server-url: ${KC_AUTH_SERVER:http://localhost:8080}
+  realm: ${KC_REALM:advisio_realm}
 keycloak-admin:
-  client-id: admin-cli
-  client-secret: your-client-secret
-  username: admin
-  password: admin
+  client-id: ${KC_CLIENT_ID:admin-cli}
+  client-secret: ${KC_SECRET:your-client-secret}
+  username: ${KC_USERNAME:admin}
+  password: ${KC_PASSWORD:admin}
 
 aws:
-  accessKeyId: pZHFL6TARutSLZ1E7f2Tgn
-  secret: 8PdV8sEkmeK13DRSM8g3WL5i7wv8Qg4hVMdSvrupSxrP
-  bucket: advisio
-  path: https://${aws.bucket}.hb.bizmrg.com
+  accessKeyId: ${AWS_ACCESS_KEY_ID:pZHFL6TARutSLZ1E7f2Tgn}
+  secret: ${AWS_SECRET:8PdV8sEkmeK13DRSM8g3WL5i7wv8Qg4hVMdSvrupSxrP}
+  bucket: ${AWS_BUCKET:advisio}
+  path: ${AWS_PATH:https://${aws.bucket}.hb.bizmrg.com}
 image:
   default: https://advisio.hb.bizmrg.com/59d1ce42-d1ec-45be-9775-cb17e34c5ea6123.jpg
 server:
-  port: 8181
+  port: ${ADVISIO_PORT:8181}
   servlet:
     context-path: /advisio
 

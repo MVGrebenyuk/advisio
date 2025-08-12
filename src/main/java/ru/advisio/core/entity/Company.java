@@ -53,6 +53,14 @@ public class Company extends BaseImagedEntity {
     private List<Device> devices;
 
     @JsonIgnore
+    @OneToMany(mappedBy = "company")
+    private List<Tag> tags;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "company")
+    private List<Template> tamplates;
+
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "company_images",

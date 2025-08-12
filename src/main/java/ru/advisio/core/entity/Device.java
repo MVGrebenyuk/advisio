@@ -66,6 +66,10 @@ public class Device extends BaseImagedEntity {
     @Enumerated(value = EnumType.STRING)
     private Status status;
 
+    @ManyToOne()
+    @JoinColumn(name = "tag_id")
+    private Tag tag;
+
     @JsonIgnore
     @ManyToMany
     @JoinTable(

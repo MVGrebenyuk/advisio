@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.advisio.core.dto.device.DeviceDto;
 import ru.advisio.core.dto.salepoints.CreateSalePointDto;
 import ru.advisio.core.dto.salepoints.SalePointDto;
 import ru.advisio.core.dto.salepoints.UpdateSalePointDto;
@@ -25,6 +26,7 @@ import java.util.UUID;
 public class SalePointsService {
 
     private final SalePointRepository repository;
+    private final DeviceService deviceService;
     private final CompanyRepository companyRepository;
     private final CollectionObjectMapper mapper;
 
@@ -69,8 +71,7 @@ public class SalePointsService {
                 .getImages();
     }
 
-    public List<Device> getAllDevicesBySp(String cname, String spId) {
-        return repository.findById(UUID.fromString(spId)).orElseThrow(() -> new AdvisioEntityNotFound(EnType.SP, spId))
-                .getDevices();
+    public List<DeviceDto> getAllDevicesBySp(String cname, String spId) {
+        return deviceService.getDevicesBySalePoint(spId);
     }
 }

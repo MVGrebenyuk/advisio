@@ -13,10 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.advisio.core.aop.CompanyManager;
+import ru.advisio.core.dto.device.DeviceDto;
 import ru.advisio.core.dto.device.DeviceRegisterResponseDto;
 import ru.advisio.core.dto.device.LinkDeviceDto;
 import ru.advisio.core.dto.device.UnlinkDeviceDto;
 import ru.advisio.core.services.DeviceService;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -59,5 +62,19 @@ public class DeviceController {
     @Operation(description = "Привязать устройстуво к компании")
     public void linkDevice(@PathVariable String cname, UnlinkDeviceDto unlinkDeviceDto){
         deviceService.removeFromSalesPoint(unlinkDeviceDto);
+    }
+
+    @CompanyManager
+    @GetMapping("/{cname}/all")
+    @Operation(description = "Получить все девайсы компании")
+    public List<DeviceDto> getAllDevices(@PathVariable String cname){
+        return deviceService.getAllDevices(cname);
+    }
+
+    @CompanyManager
+    @PutMapping("/tag/{deviceId}/add")
+    @Operation(description = "Изменить тег устройства")
+    public boolean changeTag(@PathVariable String deviceId, @RequestParam String tagId){
+        return deviceService.setTag(deviceId, tagId);
     }
 }

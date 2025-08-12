@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.advisio.core.aop.CompanyAdmin;
 import ru.advisio.core.aop.CompanyManager;
 import ru.advisio.core.aop.CompanyObserver;
+import ru.advisio.core.dto.device.DeviceDto;
 import ru.advisio.core.dto.salepoints.CreateSalePointDto;
 import ru.advisio.core.dto.salepoints.SalePointDto;
 import ru.advisio.core.dto.salepoints.UpdateSalePointDto;
@@ -72,7 +73,7 @@ public class SalePointsController {
     @CompanyObserver
     @GetMapping("/{spId}/devices/all")
     @Operation(description = "Получение девайсов торговой точки")
-    public List<Device> getAllDevicesSalePoint(@PathVariable String cname, @PathVariable String spId){
+    public List<DeviceDto> getAllDevicesSalePoint(@PathVariable String cname, @PathVariable String spId){
         return service.getAllDevicesBySp(cname, spId);
     }
 }

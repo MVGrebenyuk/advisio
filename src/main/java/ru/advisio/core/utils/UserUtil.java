@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,6 +26,11 @@ public class UserUtil {
         if (authentication instanceof JwtAuthenticationToken) {
             JwtAuthenticationToken jwtAuth = (JwtAuthenticationToken) authentication;
             List<String> dirtyGroups =  jwtAuth.getToken().getClaim("groups");
+
+            if(CollectionUtils.isEmpty(dirtyGroups)){
+                return Collections.EMPTY_SET;
+            }
+
             return dirtyGroups.stream()
                     .filter(str -> str.contains("/"))
                     .map(str -> str.split("/")[1])
