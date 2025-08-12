@@ -23,7 +23,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/group")
-@Tag(name = "DEVICE API", description = "Контроллер для работы с группами")
+@Tag(name = "GROUP API", description = "Контроллер для работы с группами")
 public class GroupController {
 
     private final GroupService service;
