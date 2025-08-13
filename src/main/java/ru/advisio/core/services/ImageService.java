@@ -1,6 +1,7 @@
 package ru.advisio.core.services;
 
 import jakarta.annotation.PostConstruct;
+import liquibase.util.ObjectUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -8,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.advisio.core.dto.image.ImageResponseDto;
+import ru.advisio.core.entity.Group;
+import ru.advisio.core.entity.SalePoint;
 import ru.advisio.core.entity.base.BaseImagedEntity;
 import ru.advisio.core.entity.Image;
 import ru.advisio.core.enums.EnType;
@@ -21,9 +24,12 @@ import ru.advisio.core.repository.SalePointRepository;
 import ru.advisio.core.repository.custom.ImageRepositoryCustomImpl;
 import ru.advisio.core.utils.CollectionObjectMapper;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +44,7 @@ public class ImageService {
     private final CompanyRepository companyRepository;
     private final SalePointRepository salePointRepository;
     private final GroupRepository groupRepository;
+    private final CompanyService companyService;
     private Map<EnType, BaseImagedRepository<? extends BaseImagedEntity>> dinamicRepo;
     @Value("${image.default}")
     private String defaultImage;
@@ -86,5 +93,27 @@ public class ImageService {
         }
 
         return (List<ImageResponseDto>) objectMapper.convertCollection(result, ImageResponseDto.class);
+    }
+
+    @Transactional
+    public List<Image> getActiveImages(String cname){
+        return companyService.getSafeCompanyByCname(cname)
+                .getImages().stream()
+                .filter(image -> activeImagesOnGroup(image.getDevGroups())
+                || !CollectionUtils.isEmpty(image.getSalePoints()))
+                .collect(Collectors.toList());
+    }
+
+    public boolean activeImagesOnGroup(List<Group> group){
+        if(CollectionUtils.isEmpty(group)){
+            return false;
+        }
+        return group.stream().anyMatch(Group::getIsActive);
+    }
+
+    @Transactional
+    public List<Image> getAllImages(String cname) {
+        return companyService.getSafeCompanyByCname(cname)
+                .getImages();
     }
 }

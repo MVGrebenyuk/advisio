@@ -215,6 +215,12 @@
         </sql>
     </changeSet>
 
+    <changeSet id="1.2" author="mvgrebenyuk">
+        <sql>
+            alter table template add column creation_dt timestamp not null;
+        </sql>
+    </changeSet>
+
 
 
 </databaseChangeLog>

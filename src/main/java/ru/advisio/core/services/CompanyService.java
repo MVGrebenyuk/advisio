@@ -66,4 +66,9 @@ public class CompanyService {
         return repository.findByCname(cname).orElseThrow(() -> new AdvisioEntityNotFound(EnType.COMPANY, cname))
                 .getDevices();
     }
+
+    public Company getSafeCompanyByCname(String cname){
+        return repository.findByCname(cname)
+                .orElseThrow(() -> new AdvisioEntityNotFound(EnType.COMPANY, cname));
+    }
 }
