@@ -13,7 +13,6 @@ import software.amazon.awssdk.services.s3.S3Client;
 import java.net.URI;
 
 @Configuration
-@PropertySource("secrets.properties")
 public class AwsConfiguration {
     @Value("${aws.accessKeyId}")
     private String key;
