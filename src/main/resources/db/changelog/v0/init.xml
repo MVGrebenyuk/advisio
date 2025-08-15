@@ -239,6 +239,12 @@
         </sql>
     </changeSet>
 
+    <changeSet id="1.4" author="mvgrebenyuk">
+        <sql>
+            alter table crm_data add column connection_id uuid references connection_crm(id);
+        </sql>
+    </changeSet>
+
 
 
 </databaseChangeLog>

@@ -1,4 +1,4 @@
-package ru.advisio.core.controller;
+package ru.advisio.core.controller.client_side;
 
 import io.micrometer.observation.annotation.Observed;
 import io.swagger.v3.oas.annotations.media.Schema;
