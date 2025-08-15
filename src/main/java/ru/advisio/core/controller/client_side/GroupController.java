@@ -1,4 +1,4 @@
-package ru.advisio.core.controller;
+package ru.advisio.core.controller.client_side;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

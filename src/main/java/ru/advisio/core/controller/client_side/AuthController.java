@@ -1,4 +1,4 @@
-package ru.advisio.core.controller;
+package ru.advisio.core.controller.client_side;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
