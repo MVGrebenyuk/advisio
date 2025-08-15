@@ -52,6 +52,8 @@ public class SecurityConfig {
             "/*/home",
             "/*/home/**",
             "/", "/home", "/*/get-token", "/get-token", "/static/**",
+            "/device/register", "/device/is_register","*/device/register", "*/device/is_register", "/*/device/register", "/*/device/is_register",
+            "/image", "/*/image", "/image/*", "/image*",
             // -- Actuator (если используется)
             "/actuator",
             "/actuator/**"
