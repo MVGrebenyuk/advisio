@@ -39,7 +39,7 @@ aws:
   accessKeyId: ${AWS_ACCESS_KEY_ID:pZHFL6TARutSLZ1E7f2Tgn}
   secret: ${AWS_SECRET:8PdV8sEkmeK13DRSM8g3WL5i7wv8Qg4hVMdSvrupSxrP}
   bucket: ${AWS_BUCKET:advisio}
-  path: ${AWS_PATH:https://${aws.bucket}.hb.bizmrg.com}
+  path: ${AWS_PATH:https://${aws.bucket}.hb.bizmrg.com/}
 image:
   default: https://advisio.hb.bizmrg.com/59d1ce42-d1ec-45be-9775-cb17e34c5ea6123.jpg
 server:
