@@ -42,7 +42,7 @@ public class DeviceService {
 
     public DeviceRegisterResponseDto registration(String uuid){
         var result = Optional.of(deviceRepository.save(Device.builder()
-                        .id(UUID.randomUUID())
+                        .id(UUID.fromString(uuid))
                         .type(DeviceType.VISIO_1)
                         .status(Status.DISABLE)
                         .serial(UUID.fromString(uuid))
