@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.advisio.core.dto.crm.CrmData;
+import ru.advisio.core.dto.crm.CrmProductData;
 import ru.advisio.core.enums.CrmType;
 
 import java.util.List;
@@ -19,6 +19,6 @@ public class ProductsCreateRequest {
 
     private CrmType crmType;
 
-    private List<CrmData> crmDataList;
+    private List<CrmProductData> crmProductDataList;
 
 }

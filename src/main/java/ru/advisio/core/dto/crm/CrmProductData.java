@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Schema(name = "Модель данных для вывода данных из CRM")
-public class CrmData {
+public class CrmProductData {
 
     @Schema(description = "Уникальный идентификатор продукта")
     private String id;

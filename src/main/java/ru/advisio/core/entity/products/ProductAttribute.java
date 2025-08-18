@@ -33,4 +33,7 @@ public class ProductAttribute {
 
     @Column(name = "value", length = 10)
     private String value;
+
+    @Transient
+    private Boolean markForRemoval = true;
 }

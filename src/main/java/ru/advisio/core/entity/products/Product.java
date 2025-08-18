@@ -2,6 +2,7 @@ package ru.advisio.core.entity.products;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.transaction.annotation.Transactional;
 import ru.advisio.core.entity.crm.CrmData;
 
 import java.util.List;
@@ -44,4 +45,7 @@ public class Product {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductAttribute> attributes;
+
+    @Transient
+    private Boolean deleteMark = true;
 }

@@ -11,11 +11,14 @@ import ru.advisio.core.dto.crm.CrmDto;
 @Slf4j
 public class CrmService {
     public CrmDto create(String cname, CrmDto crmDto) {
+        return null;
     }
 
     public CrmDto test(String cname, CrmDto crmDto) {
+        return null;
     }
 
     public CrmDto updateConnection(String cname, ConnectionCrmDto crmDto) {
+        return null;
     }
 }
