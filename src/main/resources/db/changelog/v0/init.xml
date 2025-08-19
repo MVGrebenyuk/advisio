@@ -245,6 +245,12 @@
         </sql>
     </changeSet>
 
+    <changeSet id="1.5" author="mvgrebenyuk">
+        <sql>
+            alter table crm_data rename to crm;
+        </sql>
+    </changeSet>
+
 
 
 </databaseChangeLog>

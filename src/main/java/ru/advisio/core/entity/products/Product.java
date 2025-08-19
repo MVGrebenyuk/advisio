@@ -2,8 +2,7 @@ package ru.advisio.core.entity.products;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.transaction.annotation.Transactional;
-import ru.advisio.core.entity.crm.CrmData;
+import ru.advisio.core.entity.crm.Crm;
 
 import java.util.List;
 import java.util.UUID;
@@ -26,7 +25,7 @@ public class Product {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "crm_source", nullable = false)
-    private CrmData crmSource;
+    private Crm crmSource;
 
     @Column(name = "tech_id", nullable = false, length = 100)
     private String techId;

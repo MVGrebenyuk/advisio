@@ -17,7 +17,7 @@ import ru.advisio.core.services.CrmService;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@Tag(name = "CRM API", description = "Контроллер для получение продуктов для комании")
+@Tag(name = "CRM API", description = "Контроллер для работы с CRM компании")
 @RequestMapping("/{cname}/crm")
 public class CrmController {
 
@@ -25,7 +25,7 @@ public class CrmController {
 
     @CompanyAdmin
     @PostMapping("/create")
-    @Operation(description = "Создать подключение к Crm")
+    @Operation(description = "Создать подключение к Crm \\ локальную Crm")
     public CrmDto createCrm(@PathVariable String cname, @RequestBody CrmDto crmDto){
         return crmService.create(cname, crmDto);
     }
@@ -39,7 +39,7 @@ public class CrmController {
 
     @CompanyAdmin
     @PostMapping("/{crmId}/update")
-    @Operation(description = "Протестировать подключение к crm до создания")
+    @Operation(description = "Обновить данные подключения к CRM")
     public CrmDto updateCrmConnections(@PathVariable String cname, @RequestBody ConnectionCrmDto crmDto){
         return crmService.updateConnection(cname, crmDto);
     }

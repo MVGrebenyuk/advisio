@@ -10,7 +10,7 @@ import ru.advisio.core.dto.crm.CrmProductData;
 import ru.advisio.core.dto.products.ProductsCreateRequest;
 import ru.advisio.core.entity.products.Product;
 import ru.advisio.core.entity.products.ProductAttribute;
-import ru.advisio.core.repository.CrmDataRepository;
+import ru.advisio.core.repository.CrmRepository;
 import ru.advisio.core.repository.ProductAttributeRepository;
 import ru.advisio.core.repository.ProductRepository;
 
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class ProductsService {
     private final ProductAttributeRepository productAttributeRepository;
-    private final CrmDataRepository crmDataRepository;
+    private final CrmRepository crmRepository;
 
     private final ProductRepository productRepository;
 
@@ -59,7 +59,7 @@ public class ProductsService {
     }
 
     public List<CrmProductData> createProducts(String cname, String crmId, ProductsCreateRequest request) {
-        var crm = crmDataRepository.findById(UUID.fromString(crmId))
+        var crm = crmRepository.findById(UUID.fromString(crmId))
                 .orElseThrow();
         var products = request.getCrmProductDataList()
                 .stream()

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import ru.advisio.core.dto.crm.ConnectionType;
 import ru.advisio.core.enums.CrmType;
 
 import java.time.LocalDateTime;
@@ -24,7 +25,7 @@ public class ConnectionCrm {
 
     @OneToOne
     @JoinColumn(name = "crm_id", nullable = false)
-    private CrmData crmData;
+    private Crm crm;
 
     @Column(name = "connection_name", nullable = false, length = 255)
     private String connectionName;
@@ -34,7 +35,8 @@ public class ConnectionCrm {
     private CrmType crmType;
 
     @Column(name = "connection_type", nullable = false, length = 50)
-    private String connectionType;
+    @Enumerated(value = EnumType.STRING)
+    private ConnectionType connectionType;
 
     @Column(name = "connection_url", nullable = false, length = 255)
     private String connectionUrl;

@@ -22,8 +22,9 @@ public class CrmDto {
 
     private CrmType crmType;
 
+    private String description;
+
     @Schema(description = "Не заполняется, если crmType == local")
-    @JsonIgnore
     private ConnectionCrmDto connectionParams;
 
 }

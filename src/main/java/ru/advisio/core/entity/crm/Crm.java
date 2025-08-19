@@ -6,12 +6,12 @@ import ru.advisio.core.enums.CrmType;
 
 import java.util.UUID;
 @Entity
-@Table(name = "crm_data")
+@Table(name = "crm")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CrmData {
+public class Crm {
 
     @Id
     @GeneratedValue
@@ -27,7 +27,7 @@ public class CrmData {
     @Column(name = "name", nullable = false, length = 30)
     private String name;
 
-    @OneToOne(mappedBy = "crmData")
+    @OneToOne(mappedBy = "crm")
     private ConnectionCrm connectionCrm;
 
     @Column(name = "description")

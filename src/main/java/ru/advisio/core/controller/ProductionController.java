@@ -72,6 +72,7 @@ public class ProductionController {
         return productsService.deleteAdditionalParam(crmId, paramId);
     }
 
+    @Deprecated
     @GetMapping("/mock")
     @Operation(description = "Заглушка для теста")
     public List<CrmProductData> getProductionByCrmAndCompany(@PathVariable String cname){
