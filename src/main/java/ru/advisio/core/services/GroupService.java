@@ -125,12 +125,14 @@ public class GroupService {
     }
 
     public GroupDto updateGroup(String cname, String groupId, UpdateGroupDto updateGroupDto) {
+        log.info("Активация/обновление группы {} {}", cname, groupId);
         var group = repository.findById(UUID.fromString(groupId))
                 .orElseThrow(() -> new AdvisioEntityNotFound(EnType.GROUP, groupId));
 
         group.setName(updateGroupDto.getName() == null ? group.getName() : updateGroupDto.getName());
         group.setIsActive(updateGroupDto.isActive());
 
+        log.info("Группа {} активирована/обновлена", group.getName());
         return mapToGroup(group);
     }
 
@@ -146,20 +148,25 @@ public class GroupService {
 
     private static GroupDto.GroupDevices mapToGroupDevices(Group group, Map<String, List<GroupDto.ShortDeviceDto>> result) {
         group.getDevices()
-                .stream()
                 .forEach(device -> {
+
+                    if(device.getSalePoint() == null){
+                        throw new AdvisioEntityNotFound(EnType.SP,"Неизвестная точка при маппинге группы");
+                    }
+
                     if(result.containsKey(device.getSalePoint().getName())){
-                        result.get(device.getSalePoint().getName()).add(GroupDto.ShortDeviceDto.builder()
+                        result.get(device.getSalePoint().getName())
+                                .add(GroupDto.ShortDeviceDto.builder()
                                 .id(device.getId().toString())
                                 .isActive(device.getStatus() == Status.ACTIVE)
                                 .name(device.getSerial().toString())
                                 .build());
                     } else {
-                        result.put(device.getSalePoint().getName(), Arrays.asList(GroupDto.ShortDeviceDto.builder()
+                        result.put(device.getSalePoint().getName(), new ArrayList<>(Arrays.asList(GroupDto.ShortDeviceDto.builder()
                                 .id(device.getId().toString())
                                 .isActive(device.getStatus() == Status.ACTIVE)
                                 .name(device.getSerial().toString())
-                                .build()));
+                                .build())));
                     }
                 });
         return new GroupDto.GroupDevices(result);
