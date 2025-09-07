@@ -59,7 +59,7 @@ public class DeviceController {
 
     @CompanyManager
     @PutMapping("/{cname}/unlink")
-    @Operation(description = "Привязать устройстуво к компании")
+    @Operation(description = "Отвязать устройство от компании")
     public void linkDevice(@PathVariable String cname, UnlinkDeviceDto unlinkDeviceDto){
         deviceService.removeFromSalesPoint(unlinkDeviceDto);
     }

@@ -72,7 +72,7 @@ public class GroupController {
 
     @CompanyManager
     @PutMapping("/{cname}/{groupId}/salepoint/{spId}/add")
-    @Operation(description = "Удалить девайс из группы")
+    @Operation(description = "Добавить все девайсы точки в группу")
     public GroupDto addAllDevicesFromGroupBySelePoint(@PathVariable String cname, @PathVariable String groupId, @PathVariable String spId){
         return service.addAllDeviceFromGroupBySp(groupId, spId);
     }

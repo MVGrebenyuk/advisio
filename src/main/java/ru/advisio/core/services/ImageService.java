@@ -24,10 +24,12 @@ import ru.advisio.core.repository.SalePointRepository;
 import ru.advisio.core.repository.custom.ImageRepositoryCustomImpl;
 import ru.advisio.core.utils.CollectionObjectMapper;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -79,6 +81,7 @@ public class ImageService {
 
     }
 
+    @Deprecated
     @Transactional
     public List<ImageResponseDto> getImagesByType(String uuid, EnType type) {
         log.info("Попытка получения данных для отображения для {} с id {}", type.name(), uuid);
@@ -93,6 +96,43 @@ public class ImageService {
         }
 
         return (List<ImageResponseDto>) objectMapper.convertCollection(result, ImageResponseDto.class);
+    }
+
+    @Transactional
+    public List<ImageResponseDto> getDeviceImages(String uuid){
+        var device = deviceRepository.getDeviceBySerial(UUID.fromString(uuid))
+                .orElseThrow(() -> new AdvisioEntityNotFound(EnType.DEVICE, uuid));
+
+        List<Image> images;
+
+        if(Objects.nonNull(device.getGroup()) && Boolean.TRUE.equals(device.getGroup().getIsActive())){
+            images = device.getGroup().getImages();
+            if(CollectionUtils.isNotEmpty(images)){
+                log.info("Выводим изображение по группе {} для девайса {}", device.getGroup().getName(), uuid);
+                return (List<ImageResponseDto>) objectMapper.convertCollection(images, ImageResponseDto.class);
+            }
+        }
+
+        if(Objects.nonNull(device.getSalePoint())){
+            images = device.getSalePoint().getImages();
+            if(CollectionUtils.isNotEmpty(images)){
+                log.info("Выводим изображение по SalePoint {} для девайса {}", device.getSalePoint().getName(), uuid);
+                return (List<ImageResponseDto>) objectMapper.convertCollection(images, ImageResponseDto.class);
+            }
+        }
+
+        images = device.getImages();
+        if(CollectionUtils.isNotEmpty(images)){
+            log.info("Выводим изображение по данным девайся {}", uuid);
+            return (List<ImageResponseDto>) objectMapper.convertCollection(images, ImageResponseDto.class);
+        }
+
+
+        log.info("Изображение для отображения на устройстве {} не найдено. Применяем дефолтное", uuid);
+        return List.of(ImageResponseDto.builder()
+                .id(UUID.randomUUID())
+                .image(defaultImage)
+                .build());
     }
 
     @Transactional

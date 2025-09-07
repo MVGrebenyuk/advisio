@@ -8,9 +8,13 @@ import ru.advisio.core.dto.crm.CrmDto;
 import ru.advisio.core.entity.crm.ConnectionCrm;
 import ru.advisio.core.entity.crm.Crm;
 import ru.advisio.core.enums.CrmType;
+import ru.advisio.core.enums.EnType;
+import ru.advisio.core.exceptions.AdvisioEntityNotFound;
 import ru.advisio.core.repository.CrmRepository;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -54,5 +58,42 @@ public class CrmService {
 
     public CrmDto updateConnection(String cname, ConnectionCrmDto crmDto) {
         return null;
+    }
+
+    public List<CrmDto> getCompanyCrms(String cname) {
+       return crmRepository.findAllByCompanyId(companyService.getSafeCompanyByCname(cname).getId())
+                .stream().map(crm -> CrmDto.builder()
+                        .id(crm.getId())
+                        .crmType(crm.getCrmType())
+                        .name(crm.getName())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    public CrmDto getCompanyCrm(UUID crmId) {
+        var crm =  crmRepository.findById(crmId)
+                .orElseThrow(() -> new AdvisioEntityNotFound(EnType.CRM, crmId));
+
+        return CrmDto.builder()
+                .id(crm.getId())
+                .crmType(crm.getCrmType())
+                .name(crm.getName())
+                .build();
+    }
+
+    public ConnectionCrmDto getCrmConnection(UUID crmId) {
+        var connection = crmRepository.findById(crmId)
+                .orElseThrow(() -> new AdvisioEntityNotFound(EnType.CRM, crmId))
+                .getConnectionCrm();
+
+        return ConnectionCrmDto.builder()
+                .crmType(connection.getCrmType())
+                .connectionName(connection.getConnectionName())
+                .connectionType(connection.getConnectionType())
+                .connectionUrl(connection.getConnectionUrl())
+                .password(connection.getPassword())
+                .login(connection.getLogin())
+                .token(connection.getToken())
+                .build();
     }
 }

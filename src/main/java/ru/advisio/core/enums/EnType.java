@@ -15,7 +15,8 @@ public enum EnType {
     DEVICE("device_images","device_id"),
     DETAILS(null, null),
     TAG(null, null),
-    TEMPLATE(null, null);
+    TEMPLATE(null, null),
+    CRM(null, null);
 
     private final String m2mTable;
     private final String field;
