@@ -41,7 +41,7 @@ aws:
   bucket: ${AWS_BUCKET:advisio}
   path: ${AWS_PATH:https://${aws.bucket}.hb.bizmrg.com/}
 image:
-  default: https://advisio.hb.bizmrg.com/59d1ce42-d1ec-45be-9775-cb17e34c5ea6123.jpg
+  default: https://advisio.hb.bizmrg.com/9ca1b40f-f082-4164-aec3-75a02e1882ablogo_advisio_jpg (2).jpg
 server:
   port: ${ADVISIO_PORT:8181}
   servlet:
