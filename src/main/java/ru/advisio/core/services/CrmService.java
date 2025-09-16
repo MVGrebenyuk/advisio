@@ -33,7 +33,7 @@ public class CrmService {
     private CrmService selfInject;
 
     public CrmDto create(String cname, CrmDto crmDto) {
-        var crm = saveOrUpdateCrm(cname, crmDto);
+        var crm = selfInject.saveOrUpdateCrm(cname, crmDto);
 
         if(!crmDto.getCrmType().equals(CrmType.LOCAL)){
             crm.setConnectionCrm(ConnectionCrm.builder()
