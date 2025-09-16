@@ -16,7 +16,6 @@ import java.util.UUID;
 public class Product {
 
     @Id
-    @GeneratedValue
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
@@ -32,9 +31,6 @@ public class Product {
 
     @Column(name = "tech_name", nullable = false, length = 100)
     private String techName;
-
-    @Column(name = "crm", nullable = false, length = 20)
-    private String crm;
 
     @Column(name = "sale_name", length = 150)
     private String saleName;

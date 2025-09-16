@@ -34,7 +34,7 @@ public class ProductionController {
     @CompanyManager
     @GetMapping()
     @Operation(description = "Получение продуктов для генерации изображения по конкретной crm")
-    public List<CrmProductData> getProductsByCrmAndCompany(@PathVariable String cname, @PathVariable String crmId){
+    public List<CrmProductData> getProductsByCrmAndCompany(@PathVariable String cname, @RequestParam String crmId){
         return productsService.getProducts(cname, crmId);
     }
 

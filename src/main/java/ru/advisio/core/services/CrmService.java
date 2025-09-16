@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Transactional
 public class CrmService {
     private final ConnectionCrmRepository connectionCrmRepository;
     private final CrmRepository crmRepository;

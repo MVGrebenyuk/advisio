@@ -14,7 +14,6 @@ import java.util.UUID;
 public class ProductAttribute {
 
     @Id
-    @GeneratedValue
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 

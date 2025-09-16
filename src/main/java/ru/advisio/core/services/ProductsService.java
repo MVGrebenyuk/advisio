@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 public class ProductsService {
     private final ProductAttributeRepository productAttributeRepository;
     private final CrmRepository crmRepository;
+    private final CompanyService companyService;
 
     private final ProductRepository productRepository;
 
@@ -56,6 +57,7 @@ public class ProductsService {
                         .id(attr.getId().toString())
                         .techName(attr.getTechName())
                         .name(attr.getTechName())
+                        .value(attr.getValue())
                         .build())
                 .collect(Collectors.toList());
     }
@@ -68,6 +70,8 @@ public class ProductsService {
                 .map(crmProductData -> {
                    var product =  Product.builder()
                             .id(UUID.randomUUID())
+                            .companyId(companyService.getSafeCompanyByCname(cname).getId())
+                            .techId(crmProductData.getTechName())
                             .techName(crmProductData.getTechName())
                             .saleName(crmProductData.getSaleName())
                             .crmSource(crm)
@@ -87,6 +91,7 @@ public class ProductsService {
                                .collect(Collectors.toList()));
                    }
 
+                   productRepository.save(product);
                    return product;
                 }).collect(Collectors.toList());
 

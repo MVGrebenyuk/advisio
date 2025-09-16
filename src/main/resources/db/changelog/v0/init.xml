@@ -251,6 +251,19 @@
         </sql>
     </changeSet>
 
+    <changeSet id="1.6" author="mvgrebenyuk">
+        <sql>
+            alter table products drop column crm;
+        </sql>
+    </changeSet>
+
+    <changeSet id="1.7" author="mvgrebenyuk">
+        <sql>
+            ALTER TABLE product_attributes
+            ALTER COLUMN value TYPE VARCHAR(100);
+        </sql>
+    </changeSet>
+
 
 
 </databaseChangeLog>
