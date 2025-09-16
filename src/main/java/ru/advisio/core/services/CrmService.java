@@ -3,6 +3,7 @@ package ru.advisio.core.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.advisio.core.dto.crm.ConnectionCrmDto;
 import ru.advisio.core.dto.crm.CrmDto;
 import ru.advisio.core.entity.crm.ConnectionCrm;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class CrmService {
     private final CrmRepository crmRepository;
     private final CompanyService companyService;

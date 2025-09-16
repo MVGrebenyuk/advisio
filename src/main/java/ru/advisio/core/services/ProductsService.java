@@ -10,6 +10,8 @@ import ru.advisio.core.dto.crm.CrmProductData;
 import ru.advisio.core.dto.products.ProductsCreateRequest;
 import ru.advisio.core.entity.products.Product;
 import ru.advisio.core.entity.products.ProductAttribute;
+import ru.advisio.core.enums.EnType;
+import ru.advisio.core.exceptions.AdvisioEntityNotFound;
 import ru.advisio.core.repository.CrmRepository;
 import ru.advisio.core.repository.ProductAttributeRepository;
 import ru.advisio.core.repository.ProductRepository;
@@ -60,7 +62,7 @@ public class ProductsService {
 
     public List<CrmProductData> createProducts(String cname, String crmId, ProductsCreateRequest request) {
         var crm = crmRepository.findById(UUID.fromString(crmId))
-                .orElseThrow();
+                .orElseThrow(() -> new AdvisioEntityNotFound(EnType.CRM, crmId));
         var products = request.getCrmProductDataList()
                 .stream()
                 .map(crmProductData -> {
