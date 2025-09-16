@@ -15,7 +15,8 @@ spring:
     driver-class-name: org.postgresql.Driver
   servlet:
     multipart:
-      max-file-size: 1000000000000000
+      max-file-size: 100MB
+      max-request-size: 100MB
   security:
     oauth2:
       resourceserver:
@@ -47,6 +48,9 @@ server:
   port: ${ADVISIO_PORT:8181}
   servlet:
     context-path: /advisio
+  tomcat:
+    max-swallow-size: 100MB
+    max-http-form-post-size: 100MB
 
 openapi:
   security:
