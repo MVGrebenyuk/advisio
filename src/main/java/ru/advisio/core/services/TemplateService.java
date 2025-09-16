@@ -14,6 +14,7 @@ import ru.advisio.core.enums.EnType;
 import ru.advisio.core.exceptions.AdvisioEntityNotFound;
 import ru.advisio.core.repository.TemplateRepository;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -31,12 +32,14 @@ public class TemplateService {
     private final AwsService awsService;
 
     public TemplateDto uploadTemplate(String cname, MultipartFile file) {
+        log.info("Сохраняем шаблон для компании {}", cname);
         var responseImageUrl = awsService.uploadImage(file);
         var entity = repository.save(Template.builder()
                 .id(UUID.randomUUID())
                 .name(UNNAMED)
                 .url(responseImageUrl.getImage())
                 .company(companyService.getSafeCompanyByCname(cname))
+                .creationDt(LocalDateTime.now())
                 .build());
         return TemplateDto.builder()
                 .id(entity.getId().toString())

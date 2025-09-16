@@ -40,7 +40,7 @@ public class TemplateController {
     @GetMapping("/all")
     @Operation(description = "Получение всех шаблонов медиафайлов")
     public Page<TemplateDto> getAllTemplates(@PathVariable String cname, @RequestParam(required = false) Integer pageNumber,
-                                             @RequestParam(required = false) Integer pageSize, @RequestBody MultipartFile file){
+                                             @RequestParam(required = false) Integer pageSize){
         return service.getAllTemplates(cname, pageNumber, pageSize);
     }
 
