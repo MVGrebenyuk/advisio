@@ -31,16 +31,22 @@ public class MediaService {
 
     @Transactional
     public Page<MediaDto> getAllActiveMedia(String cname, Integer pageNumber, Integer pageSize) {
-        List<Image> activeImages = imageService.getActiveImages(cname)
-                .subList(pageSize * pageNumber, (pageSize * pageNumber) + pageSize);
+        List<Image> activeImages = imageService.getActiveImages(cname);
+
+        if(!activeImages.isEmpty() && activeImages.size() >= (pageSize * pageNumber) + pageSize) {
+               activeImages = activeImages.subList(pageSize * pageNumber, (pageSize * pageNumber) + pageSize);
+        }
 
         return getMediaDtos(pageNumber, pageSize, activeImages, true);
     }
 
     @Transactional
     public Page<MediaDto> getAllCreatedMedia(String cname, Integer pageNumber, Integer pageSize) {
-        List<Image> activeImages = imageService.getAllImages(cname)
-                .subList(pageSize * pageNumber, (pageSize * pageNumber) + pageSize);
+        List<Image> activeImages = imageService.getActiveImages(cname);
+
+        if(!activeImages.isEmpty() && activeImages.size() >= (pageSize * pageNumber) + pageSize) {
+            activeImages = activeImages.subList(pageSize * pageNumber, (pageSize * pageNumber) + pageSize);
+        }
 
         return getMediaDtos(pageNumber, pageSize, activeImages, null);
     }
