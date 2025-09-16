@@ -28,6 +28,7 @@ public class Crm {
     private String name;
 
     @OneToOne(mappedBy = "crm")
+    @JoinColumn(name = "crm_id")
     private ConnectionCrm connectionCrm;
 
     @Column(name = "description")

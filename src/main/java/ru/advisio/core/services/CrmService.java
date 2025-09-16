@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.advisio.core.dto.crm.ConnectionCrmDto;
 import ru.advisio.core.dto.crm.CrmDto;
 import ru.advisio.core.entity.crm.ConnectionCrm;
+import ru.advisio.core.entity.crm.ConnectionCrmRepository;
 import ru.advisio.core.entity.crm.Crm;
 import ru.advisio.core.enums.CrmType;
 import ru.advisio.core.enums.EnType;
@@ -25,18 +26,15 @@ import java.util.stream.Collectors;
 @Slf4j
 @Transactional
 public class CrmService {
+    private final ConnectionCrmRepository connectionCrmRepository;
     private final CrmRepository crmRepository;
     private final CompanyService companyService;
 
-    @Lazy
-    @Autowired
-    private CrmService selfInject;
-
     public CrmDto create(String cname, CrmDto crmDto) {
-        var crm = selfInject.saveOrUpdateCrm(cname, crmDto);
+        var crm = saveOrUpdateCrm(cname, crmDto);
 
         if(!crmDto.getCrmType().equals(CrmType.LOCAL)){
-            crm.setConnectionCrm(ConnectionCrm.builder()
+            var connection = ConnectionCrm.builder()
                             .id(UUID.randomUUID())
                             .crm(crm)
                             .connectionName(crmDto.getConnectionParams().getConnectionName())
@@ -45,7 +43,10 @@ public class CrmService {
                             .password(crmDto.getConnectionParams().getPassword())
                             .token(crmDto.getConnectionParams().getToken())
                             .connectionType(crmDto.getConnectionParams().getConnectionType())
-                    .build());
+                    .build();
+
+            connectionCrmRepository.save(connection);
+            crm.setConnectionCrm(connection);
         }
 
         return CrmDto.builder()
@@ -55,11 +56,13 @@ public class CrmService {
                 .build();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public Crm saveOrUpdateCrm(String cname, CrmDto crmDto) {
+        var company = companyService.getSafeCompanyByCname(cname).getId();
+
         return crmRepository.save(Crm.builder()
                         .id(UUID.randomUUID())
-                        .companyId(companyService.getSafeCompanyByCname(cname).getId())
+                        .companyId(company)
                         .crmType(crmDto.getCrmType())
                         .name(crmDto.getName())
                 .build());
