@@ -2,7 +2,10 @@ package ru.advisio.core.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.advisio.core.dto.crm.ConnectionCrmDto;
 import ru.advisio.core.dto.crm.CrmDto;
@@ -25,13 +28,12 @@ public class CrmService {
     private final CrmRepository crmRepository;
     private final CompanyService companyService;
 
+    @Lazy
+    @Autowired
+    private CrmService selfInject;
+
     public CrmDto create(String cname, CrmDto crmDto) {
-        var crm = crmRepository.save(Crm.builder()
-                        .id(UUID.randomUUID())
-                        .companyId(companyService.getSafeCompanyByCname(cname).getId())
-                        .crmType(crmDto.getCrmType())
-                        .name(crmDto.getName())
-                .build());
+        var crm = saveOrUpdateCrm(cname, crmDto);
 
         if(!crmDto.getCrmType().equals(CrmType.LOCAL)){
             crm.setConnectionCrm(ConnectionCrm.builder()
@@ -51,6 +53,16 @@ public class CrmService {
                 .crmType(crm.getCrmType())
                 .name(crm.getName())
                 .build();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public Crm saveOrUpdateCrm(String cname, CrmDto crmDto) {
+        return crmRepository.save(Crm.builder()
+                        .id(UUID.randomUUID())
+                        .companyId(companyService.getSafeCompanyByCname(cname).getId())
+                        .crmType(crmDto.getCrmType())
+                        .name(crmDto.getName())
+                .build());
     }
 
     public CrmDto test(String cname, CrmDto crmDto) {
