@@ -1,5 +1,4 @@
 spring:
-  profile: develop
   application:
       name: advisio-core
   liquibase:
@@ -9,9 +8,10 @@ spring:
   jpa:
     database: postgresql
   datasource:
-    url: jdbc:postgresql://${ADVISIO_CORE_DATABASE:localhost:5432/postgres?currentSchema=${spring.liquibase.default-schema}}
-    username: ${ADVISIO_CORE_USERNAME:postgres}
-    password: ${ADVISIO_CORE_PASSWORD:postgres}
+    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=advisio_core
+    schema: advisio_core
+    username: postgres
+    password: 123456Vv
     driver-class-name: org.postgresql.Driver
   servlet:
     multipart:
@@ -42,7 +42,7 @@ aws:
   bucket: ${AWS_BUCKET:advisio}
   path: ${AWS_PATH:https://${aws.bucket}.hb.bizmrg.com/}
 image:
-  default: https://advisio.hb.bizmrg.com/9ca1b40f-f082-4164-aec3-75a02e1882ablogo_advisio_jpg (2).jpg
+  default: https://advisio.hb.bizmrg.com/59d1ce42-d1ec-45be-9775-cb17e34c5ea6123.jpg
 server:
   port: ${ADVISIO_PORT:8181}
   servlet:
