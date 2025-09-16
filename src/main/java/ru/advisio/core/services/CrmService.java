@@ -46,7 +46,6 @@ public class CrmService {
                     .build());
         }
 
-        crmRepository.save(crm);
         return CrmDto.builder()
                 .id(crm.getId())
                 .crmType(crm.getCrmType())
