@@ -19,6 +19,7 @@ import ru.advisio.core.services.MediaService;
 @Slf4j
 @Tag(name = "MEDIA API", description = "Контроллер для обработки запросов, связанных с медиа")
 @RequestMapping("/{cname}/media")
+@Deprecated
 public class MediaController {
 
     private final MediaService service;

@@ -8,6 +8,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import ru.advisio.core.dto.editor.ImageDataToSaveDto;
+import ru.advisio.core.dto.image.ImageResponseDto;
 import ru.advisio.core.dto.template.TemplateDto;
 import ru.advisio.core.entity.Template;
 import ru.advisio.core.enums.EnType;
@@ -30,6 +32,7 @@ public class TemplateService {
     private final TemplateRepository repository;
     private final CompanyService companyService;
     private final AwsService awsService;
+    private final ImageService imageService;
 
     public TemplateDto uploadTemplate(String cname, MultipartFile file) {
         log.info("Сохраняем шаблон для компании {}", cname);
@@ -62,6 +65,7 @@ public class TemplateService {
                 .id(entity.getId().toString())
                 .url(entity.getUrl())
                 .dateOfLoad(entity.getCreationDt())
+                        .name(entity.getName())
                 .build())
                 .collect(Collectors.toList());
         return new PageImpl<>(dtosList, PageRequest.of(pageNumber, pageSize), dtosList.size());
@@ -73,6 +77,7 @@ public class TemplateService {
         return TemplateDto.builder()
                 .id(entity.getId().toString())
                 .url(entity.getUrl())
+                .name(entity.getName())
                 .dateOfLoad(entity.getCreationDt())
                 .build();
     }
@@ -90,7 +95,17 @@ public class TemplateService {
         return TemplateDto.builder()
                 .id(entity.getId().toString())
                 .url(entity.getUrl())
+                .name(entity.getName())
                 .dateOfLoad(entity.getCreationDt())
                 .build();
+    }
+
+    public ImageResponseDto toCreated(String templateId) {
+        var template = repository.findById(UUID.fromString(templateId))
+                        .orElseThrow(() -> new AdvisioEntityNotFound(EnType.TEMPLATE, templateId));
+        return imageService.saveImage(template.getUrl(), template.getCompany().getId(), EnType.COMPANY,
+                ImageDataToSaveDto.builder()
+                        .templateId(template.getId().toString())
+                        .build());
     }
 }

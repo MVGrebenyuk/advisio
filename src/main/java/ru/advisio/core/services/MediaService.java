@@ -42,7 +42,7 @@ public class MediaService {
 
     @Transactional
     public Page<MediaDto> getAllCreatedMedia(String cname, Integer pageNumber, Integer pageSize) {
-        List<Image> activeImages = imageService.getActiveImages(cname);
+        List<Image> activeImages = imageService.getCreatedImages(cname);
 
         if(!activeImages.isEmpty() && activeImages.size() >= (pageSize * pageNumber) + pageSize) {
             activeImages = activeImages.subList(pageSize * pageNumber, (pageSize * pageNumber) + pageSize);
@@ -57,7 +57,9 @@ public class MediaService {
             return Page.empty();
         }
 
-        List<MediaDto> medias = activeImages.stream()
+        List<MediaDto> medias;
+
+        medias = activeImages.stream()
                 .map(image -> MediaDto.builder()
                         .id(image.getId().toString())
                         .url(image.getImage())

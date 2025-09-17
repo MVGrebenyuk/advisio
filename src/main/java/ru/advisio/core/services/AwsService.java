@@ -1,22 +1,19 @@
 package ru.advisio.core.services;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import ru.advisio.core.dto.editor.ImageDataToSaveDto;
 import ru.advisio.core.dto.image.ImageResponseDto;
-import ru.advisio.core.entity.Image;
 import ru.advisio.core.enums.EnType;
 import ru.advisio.core.exceptions.AdvisioEntityNotFound;
-import ru.advisio.core.repository.DeviceRepository;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
 import java.util.UUID;
 
@@ -33,6 +30,7 @@ public class AwsService {
 
     private final S3Client client;
     private final ImageService imageService;
+    private final CompanyService companyService;
 
     @Transactional
     public ImageResponseDto uploadImage(MultipartFile file) {
@@ -44,6 +42,24 @@ public class AwsService {
         }
 
         return imageService.saveImage(response, null, null);
+    }
+
+    @Transactional
+    public ImageResponseDto uploadImageFromEditor(ImageDataToSaveDto data, EnType type, String cname) {
+        if(data.getFile() == null){
+            throw new AdvisioEntityNotFound(EnType.FILE, data.getTemplateId());
+        }
+
+        var response = uploadImageToS3(data.getFile());
+
+        if(response == null) {
+            log.error("Error save image");
+            throw new RuntimeException();
+        }
+
+
+
+        return imageService.saveImage(response, companyService.getSafeCompanyByCname(cname).getId(), type, data);
     }
 
     @Transactional

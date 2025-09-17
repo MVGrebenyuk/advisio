@@ -1,4 +1,4 @@
-package ru.advisio.core.controller;
+package ru.advisio.core.controller.media;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import ru.advisio.core.aop.CompanyManager;
 import ru.advisio.core.aop.CompanyObserver;
+import ru.advisio.core.dto.image.ImageResponseDto;
 import ru.advisio.core.dto.template.TemplateDto;
 import ru.advisio.core.services.TemplateService;
 
@@ -63,6 +64,13 @@ public class TemplateController {
     @Operation(description = "Переименование шаблона")
     public TemplateDto uploadTemplate(@PathVariable String cname, @RequestParam String id, @RequestParam String name){
         return service.updateTemplate(id, name);
+    }
+
+    @CompanyManager
+    @PutMapping("/created")
+    @Operation(description = "Перевести шаблон в созданные")
+    public ImageResponseDto toCreated(@PathVariable String cname, @RequestParam String templateId){
+        return service.toCreated(templateId);
     }
 
 }

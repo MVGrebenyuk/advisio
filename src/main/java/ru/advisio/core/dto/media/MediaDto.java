@@ -18,6 +18,7 @@ import java.util.Set;
 @Builder
 public class MediaDto {
 
+    @Schema(description = "1k1 c imageId")
     private String id;
 
     private String name;

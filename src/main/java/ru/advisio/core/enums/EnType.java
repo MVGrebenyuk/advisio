@@ -16,6 +16,8 @@ public enum EnType {
     DETAILS(null, null),
     TAG(null, null),
     TEMPLATE(null, null),
+    FILE(null, null),
+    IMAGE(null, null),
     CRM(null, null);
 
     private final String m2mTable;

@@ -6,8 +6,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.advisio.core.dto.editor.ImageDataToSaveDto;
 import ru.advisio.core.dto.image.ImageResponseDto;
 import ru.advisio.core.entity.Group;
 import ru.advisio.core.entity.SalePoint;
@@ -16,6 +18,8 @@ import ru.advisio.core.entity.Image;
 import ru.advisio.core.enums.EnType;
 import ru.advisio.core.exceptions.AdvisioEntityNotFound;
 import ru.advisio.core.repository.CompanyRepository;
+import ru.advisio.core.repository.CrmRepository;
+import ru.advisio.core.repository.TemplateRepository;
 import ru.advisio.core.repository.base.BaseImagedRepository;
 import ru.advisio.core.repository.DeviceRepository;
 import ru.advisio.core.repository.GroupRepository;
@@ -37,6 +41,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class ImageService {
+    private final TemplateRepository templateRepository;
 
     private final CollectionObjectMapper<ImageResponseDto, Image> objectMapper;
 
@@ -47,6 +52,7 @@ public class ImageService {
     private final SalePointRepository salePointRepository;
     private final GroupRepository groupRepository;
     private final CompanyService companyService;
+    private final CrmRepository crmRepository;
     private Map<EnType, BaseImagedRepository<? extends BaseImagedEntity>> dinamicRepo;
     @Value("${image.default}")
     private String defaultImage;
@@ -68,6 +74,41 @@ public class ImageService {
                 .build());
 
         if(id != null && enType != null){
+            log.info("Привязка изображения к {} с id {}", enType.name(), id);
+            link(result, id, enType);
+        }
+
+        return objectMapper.convertValue(result, ImageResponseDto.class);
+    }
+
+    @Transactional
+    public ImageResponseDto saveImage(String image, UUID id, EnType enType,
+                                      ImageDataToSaveDto data){
+        log.info("Сохраняем изображение {}", image);
+        Image result;
+
+        if(data.getExistedImageId() != null){
+            result = repository.findById(UUID.fromString(data.getExistedImageId()))
+                    .orElseThrow(() -> new AdvisioEntityNotFound(EnType.IMAGE, data.getExistedImageId()));
+            result.setImage(image);
+            result.setData(data.getHtmlDataToRegenerate());
+            result.setCrmId(crmRepository.findById(UUID.fromString(data.getCrmId()))
+                    .orElse(null));
+            result.setTemplate(templateRepository.findById(UUID.fromString(data.getTemplateId()))
+                    .orElse(null));
+        } else {
+            result = repository.save(Image.builder()
+                    .id(UUID.randomUUID())
+                    .image(image)
+                    .crmId(crmRepository.findById(UUID.fromString(data.getCrmId()))
+                            .orElse(null))
+                    .template(templateRepository.findById(UUID.fromString(data.getTemplateId()))
+                            .orElse(null))
+                    .data(data.getHtmlDataToRegenerate())
+                    .build());
+        }
+
+        if(id != null && enType != null && data.getExistedImageId() == null){
             log.info("Привязка изображения к {} с id {}", enType.name(), id);
             link(result, id, enType);
         }
@@ -144,6 +185,12 @@ public class ImageService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public List<Image> getCreatedImages(String cname){
+        return companyService.getSafeCompanyByCname(cname)
+                .getImages();
+    }
+
     public boolean activeImagesOnGroup(List<Group> group){
         if(CollectionUtils.isEmpty(group)){
             return false;
@@ -155,5 +202,10 @@ public class ImageService {
     public List<Image> getAllImages(String cname) {
         return companyService.getSafeCompanyByCname(cname)
                 .getImages();
+    }
+
+    public Image getCreatedImage(String id) {
+        return repository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new AdvisioEntityNotFound(EnType.IMAGE, id));
     }
 }

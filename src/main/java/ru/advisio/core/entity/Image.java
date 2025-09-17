@@ -18,6 +18,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
+import ru.advisio.core.entity.crm.Crm;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +61,9 @@ public class Image {
     @JoinColumn(name = "template_id")
     private Template template;
 
-    @Column(columnDefinition = "jsonb", nullable = true)
-    @Type(value = JsonType.class)
-    private JsonNode data;
+    @Column(name = "data", nullable = true)
+    private String data;
+
+    @ManyToOne
+    private Crm crmId;
 }
